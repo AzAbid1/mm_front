@@ -36,13 +36,21 @@
               Sign In
             </button>
           </mat-card-actions>
-          <mat-card-actions class="actions google-login">
-            <button mat-stroked-button color="primary" (click)="loginWithGoogle()">
-              <img src="/assets/google-logo.svg" alt="Google Logo" class="google-icon" />
-              Sign in with Google
-            </button>
-          </mat-card-actions>
         </form>
+        <mat-card-actions class="actions google-login">
+          <button mat-stroked-button color="primary" (click)="loginWithGoogle()">
+            <img src="/assets/google-logo.svg" alt="Google Logo" class="google-icon" />
+            Sign in with Google
+          </button>
+        </mat-card-actions>
       </mat-card-content>
     </mat-card>
+    <mat-card class="register-card">
+      <mat-card-content>
+        <div class="register-text">
+          Or <a routerLink="/auth/register">click here</a> to create your free account.
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
   </div>

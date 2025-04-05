@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { GoogleSuccessComponent } from './components/google-success/google-success.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,11 @@ const routes: Routes = [
       {
         path: 'register',
         component: RegisterComponent,
-      },    
+      },
+      { 
+        path: 'google-success', 
+        component: GoogleSuccessComponent 
+      },   
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: '**', redirectTo: 'login', pathMatch: 'full' },
     ],

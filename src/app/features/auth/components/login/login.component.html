@@ -1,1 +1,48 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="logo-container">
+    <img src="/assets/logo-name.png" alt="App Logo" class="logo">
+  </div>
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Welcome back!</mat-card-title>
+        <mat-card-subtitle>Connect using your credentials</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="Enter your email">
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+              Please enter a valid email
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password" placeholder="Enter your password">
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-card-actions class="actions">
+            <button mat-raised-button color="secondary" type="submit">
+              Sign In
+            </button>
+          </mat-card-actions>
+          <mat-card-actions class="actions google-login">
+            <button mat-stroked-button color="primary" (click)="loginWithGoogle()">
+              <img src="/assets/google-logo.svg" alt="Google Logo" class="google-icon" />
+              Sign in with Google
+            </button>
+          </mat-card-actions>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

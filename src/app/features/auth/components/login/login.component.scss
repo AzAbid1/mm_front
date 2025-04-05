@@ -1,0 +1,105 @@
+// Variables for consistency
+$card-max-width: 550px;
+$spacing-unit: 18px;
+$card-padding: 20px;
+$button-margin-top: 12px;
+
+// Background and card colors
+$background-color: #f2f4f6; 
+$card-background-color: #FFFFFF;
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  padding: $spacing-unit;
+  background-color: $background-color;
+  position: relative;
+  overflow: hidden;
+  padding-top: 10vh;
+
+  .logo-container {
+    margin-bottom: $spacing-unit;
+    z-index: 1;
+
+    .logo {
+      max-width: 350px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: $card-max-width;
+    padding: $card-padding;
+    border-radius: 8px;
+    box-shadow: 0.01 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: $card-background-color;
+
+    mat-card-header {
+      text-align: start;
+      margin-bottom: $spacing-unit;
+
+      mat-card-title {
+        font-size: 24px;
+        font-weight: 500;
+        color: #1A2526;
+      }
+
+      mat-card-subtitle {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+
+    .full-width {
+      width: 100%;
+      margin-bottom: calc($spacing-unit / 2);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: $button-margin-top;
+
+      button {
+        width: 100%;
+        max-width: 200px;
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.snackbar-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.snackbar-error {
+  background-color: #f44336;
+  color: white;
+}
+
+.google-login {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .google-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

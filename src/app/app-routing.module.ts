@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ClientGuard } from './core/guards/client.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 const routes: Routes = [
     {
         path: '',
@@ -9,12 +11,14 @@ const routes: Routes = [
     {
         path: "auth",
         loadChildren: () =>
-        import("./features/auth/auth.module").then((m) => m.AuthModule)
+        import("./features/auth/auth.module").then((m) => m.AuthModule),
+        canActivate: [AuthGuard]
     },
     {
         path: "client",
         loadChildren: () =>
-        import("./features/client/client.module").then((m) => m.ClientModule)
+        import("./features/client/client.module").then((m) => m.ClientModule),
+        canActivate: [ClientGuard]
     }
 ];
 

@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { provideEnvironmentInitializer, inject, NgModule } from '@angular/core';
 import { SessionStateService } from './core/services/session-state.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,7 @@ import { SessionStateService } from './core/services/session-state.service';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule
   ],
   providers: [

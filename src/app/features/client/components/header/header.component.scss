@@ -1,0 +1,70 @@
+.header {
+    background-color: #FFFFFF; // White background like DataCamp
+    height: 64px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  
+    .separator {
+        height: 32px;
+        margin: 0 16px;
+        background-color: #FFFFFF;
+        opacity: 0.7;
+      }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      height: 100%;
+      width: 100%; // Ensure content spans full width
+  
+      .logo {
+        height: 40px;
+        margin-right: 16px;
+      }
+  
+      .nav-buttons {
+        display: flex;
+        align-items: center;
+  
+        button {
+          color: #1A2526; // Dark grey for inactive buttons
+          font-size: 14px;
+          font-weight: 500;
+          padding: 8px 16px;
+          text-transform: uppercase; // Match DataCamp's style
+          transition: background-color 0.3s;
+  
+          &:hover {
+            background-color: #E8ECEF; // Light grey hover effect
+          }
+  
+          &.active {
+            background-color: #1976D2; // Blue for active button
+            color: #FFFFFF; // White text for active button
+          }
+  
+          // Override Material's default border-radius
+          &.mat-mdc-button {
+            border-radius: 0 !important;
+          }
+        }
+      }
+  
+      .spacer {
+        flex: 1; // Pushes settings icon to the right
+      }
+  
+      // Style the settings icon
+      mat-icon-button {
+        color: #1A2526;
+  
+        &:hover {
+          background-color: #E8ECEF;
+        }
+      }
+    }
+  }

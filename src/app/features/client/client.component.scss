@@ -1,0 +1,14 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #edf0f3;
+  }
+  
+  .content {
+    flex: 1; // Take up remaining height below the header
+    padding: 24px;
+    background-color: #e5e5f7;
+    opacity: 0.3;
+    background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 40px ), repeating-linear-gradient( #444cf755, #444cf7 );
+  }

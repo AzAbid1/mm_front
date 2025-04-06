@@ -1,0 +1,35 @@
+<mat-toolbar class="header">
+    <div class="header-content">
+      <!-- Logo -->
+      <img src="/assets/logo-name.png" alt="Marketmind Logo" class="logo">
+      <mat-divider vertical class="separator"></mat-divider>
+      <!-- Navigation Buttons -->
+      <div class="nav-buttons">
+        <button mat-button routerLink="/client/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+          Dashboard
+        </button>
+        <button mat-button routerLink="/client/analytics" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+          Analytics
+        </button>
+        <button mat-button routerLink="/client/campaigns" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+          Campaigns
+        </button>
+        <button mat-button routerLink="/client/settings" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+          Settings
+        </button>
+      </div>
+  
+      <!-- Spacer to push settings to the right -->
+      <span class="spacer"></span>
+  
+      <!-- Settings Icon with Dropdown -->
+      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" aria-label="Settings">
+        <mat-icon>settings</mat-icon>
+      </button>
+      <mat-menu #settingsMenu="matMenu">
+        <button mat-menu-item (click)="openAccountDetails()">Account Details</button>
+        <button mat-menu-item (click)="openChangePassword()">Change Password</button>
+        <button mat-menu-item (click)="logout()">Log Out</button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>

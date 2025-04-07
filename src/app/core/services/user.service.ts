@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface RegisterPayload {
@@ -14,13 +14,20 @@ interface LoginPayload {
   password: string;
 }
 
+interface UpdateUserPayload {
+  firstName: string;
+  lastName: string;
+}
+
+interface ChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-
-
 export class UserService {
-
   private baseUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
@@ -35,6 +42,14 @@ export class UserService {
 
   getUserById(userId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/user/${userId}`);
+  }
+
+  updateUserDetails(userId: string, payload: UpdateUserPayload): Observable<any> {
+    return this.http.put(`${this.baseUrl}/user/${userId}`, payload);
+  }
+
+  changePassword(userId: string, payload: ChangePasswordPayload): Observable<any> {
+    return this.http.put(`${this.baseUrl}/user/${userId}/change-password`, payload);
   }
 
   initiateGoogleAuth(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
 import { LocalStorageService } from '../../../../core/services/local-storage.service';
@@ -27,11 +27,25 @@ export class RegisterComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator() });
   }
 
   ngOnInit(): void {}
+
+  // Custom validator to check if password and confirmPassword match
+  passwordMatchValidator(): ValidatorFn {
+    return (formGroup: AbstractControl) => {
+      const password = formGroup.get('password')?.value;
+      const confirmPassword = formGroup.get('confirmPassword')?.value;
+
+      if (password && confirmPassword && password !== confirmPassword) {
+        return { passwordMismatch: true };
+      }
+      return null;
+    };
+  }
 
   onSubmit(): void {
     if (this.registerForm.valid) {
@@ -60,7 +74,7 @@ export class RegisterComponent implements OnInit {
         }
       });
     } else {
-      this.snackBar.open('Please fill in all required fields', 'Close', {
+      this.snackBar.open('Please fill in all required fields correctly', 'Close', {
         duration: 3000,
         panelClass: 'snackbar-error',
         horizontalPosition: 'end',

@@ -4,5 +4,5 @@ export interface User {
     lastName: string;
     password?: string;
     isSocial: boolean;
-    id?: string;
+    _id?: string;
   }

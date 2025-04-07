@@ -1,0 +1,42 @@
+<div class="account-container">
+    <mat-card class="account-card">
+      <mat-card-header>
+        <mat-card-title>Update Account Details</mat-card-title>
+        <mat-card-subtitle>Modify your personal information</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+          <!-- Email (Disabled) -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="Your email">
+          </mat-form-field>
+  
+          <!-- First Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Enter your first name">
+            <mat-error *ngIf="accountForm.get('firstName')?.hasError('required')">
+              First name is required
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Last Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Enter your last name">
+            <mat-error *ngIf="accountForm.get('lastName')?.hasError('required')">
+              Last name is required
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Submit Button -->
+          <mat-card-actions class="actions">
+            <button mat-raised-button color="primary" type="submit">
+              Update Details
+            </button>
+          </mat-card-actions>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

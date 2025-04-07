@@ -17,14 +17,10 @@ export class HeaderComponent {
   router = inject(Router);
 
   openAccountDetails(): void {
-    // Navigate to account details page (implement route as needed)
-    console.log('Open Account Details');
-    this.router.navigate(['/client/account-details']);
+    this.router.navigate(['/client/edit-account']);
   }
 
   openChangePassword(): void {
-    // Navigate to change password page (implement route as needed)
-    console.log('Open Change Password');
     this.router.navigate(['/client/change-password']);
   }
 

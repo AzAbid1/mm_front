@@ -44,8 +44,12 @@ export class LoginComponent implements OnInit {
             horizontalPosition: 'end',
             verticalPosition: 'bottom'
           });
-          const user: User = response.user;
-          this.sessionService.currentUserSig.set(user);
+          const user = response.user as User;
+          if (user) {
+            this.sessionService.currentUserSig.set(user);
+          } else {
+            console.error('User data not found in response');
+          }
           this.router.navigateByUrl('/client');
         },
         error: (error) => {

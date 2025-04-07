@@ -8,7 +8,6 @@ import { UserService } from './user.service';
   providedIn: 'root'
 })
 export class SessionStateService {
-  
   sessionService = inject(SessionService);
   localstorageService = inject(LocalStorageService);
   userService = inject(UserService);
@@ -23,9 +22,16 @@ export class SessionStateService {
         if (this.localstorageService.isValidToken()) {
           if (userId) {
             this.userService.getUserById(userId).subscribe({
-              next: (user: User) => {
-                this.sessionService.currentUserSig.set(user);
-                resolve();
+              next: (response: any) => {
+                // Extract the user object from the response
+                const user = response.user as User;
+                if (user) {
+                  this.sessionService.currentUserSig.set(user); // Set only the user object
+                  resolve();
+                } else {
+                  console.error('User data not found in response');
+                  resolve();
+                }
               },
               error: (err: any) => {
                 console.error('Error fetching user:', err);

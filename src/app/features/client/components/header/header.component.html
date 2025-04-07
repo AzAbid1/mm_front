@@ -28,7 +28,7 @@
       </button>
       <mat-menu #settingsMenu="matMenu">
         <button mat-menu-item (click)="openAccountDetails()">Account Details</button>
-        <button mat-menu-item (click)="openChangePassword()">Change Password</button>
+        <button mat-menu-item *ngIf="!sessionService.currentUserSig()?.isSocial" (click)="openChangePassword()">Change Password</button>
         <button mat-menu-item (click)="logout()">Log Out</button>
       </mat-menu>
     </div>

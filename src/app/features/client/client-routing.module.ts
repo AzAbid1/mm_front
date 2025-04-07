@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ClientComponent } from './client.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { EditAccountComponent } from './components/edit-account/edit-account.component';
+import { NonSocialAuthGuard } from '../../core/guards/non-social-auth.guard';
 
 const routes: Routes = [
   {
@@ -10,7 +11,11 @@ const routes: Routes = [
     component: ClientComponent,
     children: [
       { path: 'edit-account', component: EditAccountComponent },
-      { path: 'change-password', component: ChangePasswordComponent },
+      {
+        path: 'change-password',
+        component: ChangePasswordComponent,
+        canActivate: [NonSocialAuthGuard]
+      },
     ],
   },
 ];

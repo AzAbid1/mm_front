@@ -9,7 +9,6 @@ import { User } from '../../../../core/models/user.model';
 @Component({
   selector: 'app-google-success',
   template: `<p>Redirecting...</p>`,
-
 })
 export class GoogleSuccessComponent implements OnInit {
   route = inject(ActivatedRoute);
@@ -33,11 +32,30 @@ export class GoogleSuccessComponent implements OnInit {
           verticalPosition: 'bottom'
         });
         this.userService.getUserById(id).subscribe({
-          next: (user: User) => {
-            this.sessionService.currentUserSig.set(user);
+          next: (response: any) => {
+            const user = response.user as User; // Extract the user object
+            if (user) {
+              this.sessionService.currentUserSig.set(user); // Set only the user object
+            } else {
+              console.error('User data not found in response');
+              this.snackBar.open('Failed to fetch user data', 'Close', {
+                duration: 3000,
+                panelClass: 'snackbar-error',
+                horizontalPosition: 'end',
+                verticalPosition: 'bottom'
+              });
+              this.router.navigateByUrl('/login');
+            }
           },
           error: (err: any) => {
             console.error('Error fetching user:', err);
+            this.snackBar.open('Failed to fetch user data', 'Close', {
+              duration: 3000,
+              panelClass: 'snackbar-error',
+              horizontalPosition: 'end',
+              verticalPosition: 'bottom'
+            });
+            this.router.navigateByUrl('/login');
           }
         });
         this.router.navigateByUrl('/client');

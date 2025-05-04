@@ -19,15 +19,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
+import { LoadingComponent } from './components/loading/loading.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
+    
     HeaderComponent,
     ClientComponent,
     EditAccountComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+   
   ],
   imports: [
+    MatSelectModule,
+    LoadingComponent,
     CommonModule,
     ClientRoutingModule,
     MatSidenavModule,

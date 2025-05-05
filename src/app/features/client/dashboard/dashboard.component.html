@@ -1,0 +1,56 @@
+<div class="dashboard-container">
+  <h1>Welcome to the Dashboard</h1>
+  <p>This is your MarketMind dashboard where you can manage your campaigns and analytics.</p>
+
+  <form [formGroup]="imageGenForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Product Name</mat-label>
+      <input matInput formControlName="product_name" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Product Description</mat-label>
+      <input matInput formControlName="product_desc" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Text Model</mat-label>
+      <mat-select formControlName="text_model" required>
+        <mat-option value="openai">OpenAI</mat-option>
+        <mat-option value="qwen-coder">Qwen-Coder</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Image Model</mat-label>
+      <mat-select formControlName="image_model" required>
+        <mat-option value="flux">Flux</mat-option>
+        <mat-option value="midijourney">MidJourney</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Width</mat-label>
+      <input matInput formControlName="width" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Height</mat-label>
+      <input matInput formControlName="height" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Seed (optional)</mat-label>
+      <input matInput formControlName="seed">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="imageGenForm.invalid">Generate Image</button>
+  </form>
+
+  <app-loading *ngIf="isLoading"></app-loading>
+
+  <div *ngIf="responseMessage" class="response">
+    <p>{{ responseMessage }}</p>
+    <img *ngIf="image" [src]="image" alt="Generated Background" class="generated-image" />
+  </div>
+</div>

@@ -1,0 +1,29 @@
+.dialog-container {
+    h2 {
+      font-size: 20px;
+      font-weight: 500;
+      color: #1A2526;
+      margin-bottom: 16px;
+    }
+  
+    p {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 24px;
+    }
+  
+    mat-dialog-actions {
+      button {
+        font-size: 14px;
+        font-weight: 500;
+      }
+  
+      button[mat-button] {
+        color: #666;
+      }
+  
+      button[mat-raised-button] {
+        padding: 8px 16px;
+      }
+    }
+  }

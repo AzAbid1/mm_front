@@ -1,0 +1,138 @@
+// Variables for consistency
+$card-max-width: 600px;
+$spacing-unit: 18px;
+$card-padding: 20px;
+$background-color: #f2f4f6;
+$card-background-color: #FFFFFF;
+
+.product-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: $spacing-unit;
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-image: radial-gradient(#444cf7 2px, #e5e5f7 2px);
+  background-size: 50px 50px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-unit * 2;
+    padding: 0 $spacing-unit;
+
+    h1 {
+      font-size: 28px;
+      font-weight: 500;
+      color: #1A2526;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .product-card {
+    background-color: $card-background-color;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: $card-padding;
+    max-width: $card-max-width;
+    margin: 0 auto;
+
+    mat-card-header {
+      mat-card-title {
+        font-size: 24px;
+        font-weight: 500;
+        color: #1A2526;
+      }
+
+      mat-card-subtitle {
+        font-size: 16px;
+        color: #666;
+      }
+    }
+
+    .details {
+      margin-bottom: $spacing-unit;
+      p {
+        font-size: 16px;
+        color: #333;
+        margin: 8px 0;
+
+        strong {
+          font-weight: 500;
+          color: #1A2526;
+        }
+      }
+    }
+
+    .images-container {
+      h3 {
+        font-size: 18px;
+        font-weight: 500;
+        color: #1A2526;
+        margin-bottom: $spacing-unit / 2;
+      }
+
+      .images-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $spacing-unit / 2;
+
+        .product-image {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 4px;
+        }
+
+        .no-image {
+          width: 100px;
+          height: 100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #f5f5f5;
+          color: #666;
+          font-size: 14px;
+          border-radius: 4px;
+          text-align: center;
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: $spacing-unit / 2;
+      margin-top: $spacing-unit;
+
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    margin-top: $spacing-unit * 2;
+  }
+}
+
+.snackbar-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.snackbar-error {
+  background-color: #f44336;
+  color: white;
+}

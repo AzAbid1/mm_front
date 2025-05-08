@@ -21,6 +21,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { LoadingComponent } from './components/loading/loading.component';
 import { MatSelectModule } from '@angular/material/select';
+import { AddProductComponent } from './components/products/add-product/add-product.component';
+import { ModifyProductComponent } from './components/products/modify-product/modify-product.component';
+import { ProductComponent } from './components/products/product/product.component';
+import { ProductsComponent } from './components/products/products/products.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DeleteDialogComponent } from './components/products/delete-dialog/delete-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +35,11 @@ import { MatSelectModule } from '@angular/material/select';
     ClientComponent,
     EditAccountComponent,
     ChangePasswordComponent,
+    AddProductComponent,
+    ModifyProductComponent,
+    ProductComponent,
+    ProductsComponent,
+    DeleteDialogComponent
    
   ],
   imports: [
@@ -47,7 +58,8 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSnackBarModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ]
 })
 export class ClientModule { }

@@ -1,0 +1,38 @@
+<div class="products-container">
+    <div class="header">
+      <h1>Your Products</h1>
+      <button mat-raised-button color="secondary" (click)="navigateToAddProduct()">
+        Add New Product
+      </button>
+    </div>
+    <div class="products-grid">
+      <mat-card *ngFor="let product of products" class="product-card" (click)="navigateToProduct(product._id)">
+        <mat-card-header>
+          <mat-card-title>{{ product.name }}</mat-card-title>
+          <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="image-container">
+            <img
+              *ngIf="product.imageUrls && product.imageUrls.length > 0"
+              [src]="product.imageUrls[0]"
+              alt="Product Image"
+              class="product-image"
+            />
+            <div *ngIf="!product.imageUrls || product.imageUrls.length === 0" class="no-image">
+              No Image Available
+            </div>
+          </div>
+          <p class="price">Price: ${{ product.price.toFixed(2) }}</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="add-product-card" (click)="navigateToAddProduct()">
+        <mat-card-content>
+          <div class="add-product-content">
+            <mat-icon>add</mat-icon>
+            <p>Add New Product</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>

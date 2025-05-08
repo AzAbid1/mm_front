@@ -1,0 +1,46 @@
+<div class="product-container">
+    <div class="header">
+      <h1>Product Details</h1>
+      <button mat-raised-button color="secondary" (click)="navigateBack()">
+        Back to Products
+      </button>
+    </div>
+    <mat-card class="product-card" *ngIf="product">
+      <mat-card-header>
+        <mat-card-title>{{ product.name }}</mat-card-title>
+        <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="details">
+          <p><strong>Price:</strong> ${{ product.price.toFixed(2) }}</p>
+          <p><strong>Created:</strong> {{ product.createdAt | date:'short' }}</p>
+          <p><strong>Updated:</strong> {{ product.updatedAt | date:'short' }}</p>
+        </div>
+        <div class="images-container">
+          <h3>Images</h3>
+          <div class="images-grid">
+            <img
+              *ngFor="let url of product.imageUrls"
+              [src]="url"
+              alt="Product Image"
+              class="product-image"
+            />
+            <div *ngIf="!product.imageUrls || product.imageUrls.length === 0" class="no-image">
+              No Images Available
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="actions">
+        <button mat-raised-button color="primary" (click)="navigateToEdit()">
+          Modify
+        </button>
+        <button mat-raised-button color="warn" (click)="openDeleteDialog()">
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    <div *ngIf="!product" class="loading">
+      Loading product details...
+    </div>
+  </div>

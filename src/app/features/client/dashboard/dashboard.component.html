@@ -8,14 +8,12 @@
     <h1>Welcome to MarketMind!</h1>
     <p>First part of integrating social media generation section.</p>
 
+ 
+       
+      <span id="delete-chat-button" class="icon material-symbols-rounded" (click)="deleteChats()">delete</span>
    
 
-    <app-loading *ngIf="isLoading"></app-loading>
-
-    <div *ngIf="responseMessage" class="response">
-      <p>{{ responseMessage }}</p>
-      <img *ngIf="image" [src]="image" alt="Generated Background" class="generated-image" />
-    </div>
+    
   </div>
 
   <header class="header" [class.hide-header]="chatMessages.length > 0">
@@ -23,6 +21,7 @@
     <p class="subtitle">How can I help you today?</p>
     <ul class="suggestion-list">
       <li class="suggestion" *ngFor="let suggestion of suggestions" (click)="handleOutgoingChat(suggestion.text)">
+        <img src="https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="easter bunny">
         <h4 class="text">{{ suggestion.text }}</h4>
         <span class="icon material-symbols-rounded">{{ suggestion.icon }}</span>
       </li>
@@ -32,37 +31,32 @@
   <div class="chat-list">
     <div class="message" *ngFor="let message of chatMessages" [class.incoming]="message.isIncoming" [class.outgoing]="!message.isIncoming" [class.loading]="message.isLoading" [class.error]="message.isError">
       <div class="message-content">
-        <img class="avatar" [src]="message.isIncoming ? 'https://i.postimg.cc/hP2WrQTQ/Gemini-August-Release-SS-width-1300.jpg' : 'https://i.postimg.cc/L8hd043C/images.png'" [alt]="message.isIncoming ? 'Gemini avatar' : 'User avatar'">
-        <p class="text" *ngIf="!message.isLoading">{{ message.content }}</p>
-        <div class="loading-indicator" *ngIf="message.isLoading">
-          <div class="loading-bar"></div>
-          <div class="loading-bar"></div>
-          <div class="loading-bar"></div>
+      <div class="message-text-content">
+          <div *ngIf="!message.isLoading && message.facebookPost" class="post-section">
+            <h4>Facebook Post</h4>
+            <p class="text">{{ message.facebookPost }}</p>
+            <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.facebookPost})">content_copy</span>
+          </div>
+          <div *ngIf="!message.isLoading && message.instagramPost" class="post-section">
+            <h4>Instagram Post</h4>
+            <p class="text">{{ message.instagramPost }}</p>
+            <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.instagramPost})">content_copy</span>
+          </div>
+          <img *ngIf="message.image" [src]="message.image" alt="Generated image" class="message-image">
+          <div class="loading-indicator" *ngIf="message.isLoading">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
         </div>
       </div>
-      <span class="icon material-symbols-rounded" *ngIf="!message.isLoading && !message.isError" (click)="copyMessage(message)">content_copy</span>
+      <span class="icon material-symbols-rounded" *ngIf="!message.isLoading && !message.isError && !message.facebookPost" (click)="copyMessage(message)">content_copy</span>
     </div>
   </div>
 
   
-  </div>  </div>
-  <div class="typing-area">
-    
-    <form class="typing-form" [formGroup]="chatForm" (ngSubmit)="handleOutgoingChat()">
-      
-      <div class="input-wrapper">
-        <input type="text" class="typing-input" matInput formControlName="product_name" placeholder="Enter a product name  here" formControlName="message"  style="width: 320px;">
-        <input type="text" class="typing-input"  matInput formControlName="product_desc" placeholder="Enter a descreption here" formControlName="message" required>
-        
-        <button type="submit" id="send-message-button" class="icon material-symbols-rounded">send</button>
-        
-      </div>
-      <div class="action-buttons">
-        <span id="delete-chat-button" class="icon material-symbols-rounded" (click)="deleteChats()">delete</span>
-      </div>
-    </form>
-    <p class="disclaimer-text">
-     powred by  MarketMind
-    </p>
   </div>
+  
+  </div>
+ 
 </body>

@@ -14,6 +14,13 @@ interface ChatMessage {
   isIncoming: boolean;
   isLoading?: boolean;
   isError?: boolean;
+  image?: string;
+  facebookPost?: string;
+  instagramPost?: string;
+}
+
+interface ApiResponse {
+  output: string;
 }
 
 @Component({
@@ -24,8 +31,7 @@ interface ChatMessage {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    ReactiveFormsModule,
-    LoadingComponent
+    ReactiveFormsModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -43,6 +49,7 @@ export class DashboardComponent implements OnInit {
     { text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
     { text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
     { text: 'Can you help me find the latest news on web development?', icon: 'explore' },
+    { text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' } ,
     { text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' }
   ];
 
@@ -110,18 +117,32 @@ export class DashboardComponent implements OnInit {
   // Fetch response from the API
   private async generateAPIResponse(message: ChatMessage): Promise<void> {
     try {
+      console.log(message);
       const response = await this.http
-        .post(
-          this.API_URL,
-          {
-            contents: [{ role: 'user', parts: [{ text: message.content }] }]
-          },
+        .post<ApiResponse>(
+          'http://localhost:8001/PostDescreption',
+          { user_description: message.content },
           { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
         )
         .toPromise();
 
-      const apiResponse = "response['candidates'][0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1')";
-      this.showTypingEffect(apiResponse, message);
+      if (response) {
+        const content = response.output;
+        // Split the content into Facebook and Instagram posts, removing the Hashtags section
+        const facebookMatch = content.match(/\*\*Facebook Post Description:\*\* (.*?)(?=\*\*Instagram Post Description:\*\*|$)/s);
+        const instagramMatch = content.match(/\*\*Instagram Post Description:\*\* (.*?)(?=Hashtags:|$)/s);
+        
+        // Clean up the posts by removing any trailing hashtags section
+        const cleanFacebookPost = facebookMatch ? facebookMatch[1].trim().replace(/\s*Hashtags:.*$/, '') : '';
+        const cleanInstagramPost = instagramMatch ? instagramMatch[1].trim().replace(/\s*Hashtags:.*$/, '') : '';
+        
+        message.facebookPost = cleanFacebookPost;
+        message.instagramPost = cleanInstagramPost;
+        
+        // Show the content with proper formatting
+        const formattedContent = `Facebook Post:\n${message.facebookPost}\n\nInstagram Post:\n${message.instagramPost}`;
+        this.showTypingEffect(formattedContent, message);
+      }
     } catch (error: any) {
       this.isResponseGenerating = false;
       message.content = error.error?.message || 'An error occurred';
@@ -132,7 +153,7 @@ export class DashboardComponent implements OnInit {
 
   // Show loading animation
   private showLoadingAnimation(userMessage: string): void {
-    const loadingMessage = this.createMessage('', true, true);
+    const loadingMessage = this.createMessage(userMessage, true, true);
     this.chatMessages.push(loadingMessage);
     this.scrollToBottom();
     this.generateAPIResponse(loadingMessage);
@@ -149,33 +170,34 @@ export class DashboardComponent implements OnInit {
     this.chatForm.reset();
     this.saveChatsToLocalStorage();
     this.scrollToBottom();
- 
-
 
     if (!this.imageGenForm.valid) {
-       
-        const formData = this.imageGenForm.value;
-        this.http.post('http://localhost:8002/generate-image', formData).subscribe({
-          next: (response: any) => {
-            this.responseMessage = response.message;
-            this.image = response.image || null;
-           
-            
-          },
-          error: (error) => {
-            this.responseMessage = `Error: ${error.error.detail || error.message}`;
-            this.image = null;
-            
-            console.error('HTTP Error:', error);
+      
+      const formData = this.imageGenForm.value;
+      formData.product_name = userMessage;
+      formData.product_desc = userMessage;
+      this.http.post('http://localhost:8002/generate-image', formData).subscribe({
+        next: (response: any) => {
+          this.responseMessage = response.message;
+          this.image = response.image || null;
+          // Add the image to the last message
+          if (this.image && this.chatMessages.length > 0) {
+            this.chatMessages[this.chatMessages.length - 1].image = this.image;
+            this.saveChatsToLocalStorage();
           }
-        });
-      }
-      setTimeout(() => this.showLoadingAnimation(userMessage), 500);
-
+        },
+        error: (error) => {
+          this.responseMessage = `Error: ${error.error.detail || error.message}`;
+          this.image = null;
+          console.error('HTTP Error:', error);
+        }
+      });
+    }
+    setTimeout(() => this.showLoadingAnimation(userMessage), 100);
   }
 
   // Copy message to clipboard
-  copyMessage(message: ChatMessage): void {
+  copyMessage(message: ChatMessage | { content: string }): void {
     navigator.clipboard.writeText(message.content);
     // Optionally, show a visual confirmation (e.g., change icon temporarily)
   }
@@ -214,7 +236,7 @@ export class DashboardComponent implements OnInit {
     if (this.imageGenForm.valid) {
       this.isLoading = true;
       const formData = this.imageGenForm.value;
-      this.http.post('http://localhost:8002/generate-image', formData).subscribe({
+      this.http.post('http://localhost:8005', formData).subscribe({
         next: (response: any) => {
           this.responseMessage = response.message;
           this.image = response.image || null;
@@ -223,6 +245,7 @@ export class DashboardComponent implements OnInit {
             this.loadingComponent.ngOnInit();
           }
         },
+        
         error: (error) => {
           this.responseMessage = `Error: ${error.error.detail || error.message}`;
           this.image = null;

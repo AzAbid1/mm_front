@@ -117,14 +117,22 @@ body.light_mode {
   width: 100%;
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
+  
+
   gap: 1.25rem;
   margin-top: 9.5vh;
   overflow: hidden;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-
+   
   .suggestion {
+    img {
+      height: 120px; 
+  
+    } 
+
     cursor: pointer;
     padding: 1.25rem;
     width: 222px;
@@ -178,14 +186,61 @@ body.light_mode {
 
     .message-content {
       display: flex;
-      gap: 1.5rem;
-      width: 100%;
-      align-items: center;
-    }
+      gap: 12px;
+      align-items: flex-start;
+      
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-    .text {
-      color: var(--text-color);
-      white-space: pre-wrap;
+      .message-text-content {
+        flex: 1;
+        
+        .post-section {
+          margin-bottom: 1rem;
+          padding: 1rem;
+          background: var(--secondary-color);
+          border-radius: 8px;
+          position: relative;
+
+          h4 {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+          }
+
+          .text {
+            margin: 0;
+            line-height: 1.5;
+            white-space: pre-wrap;
+          }
+
+          .icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            margin: 0;
+            visibility: visible;
+          }
+        }
+
+        .text {
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        .message-image {
+          max-width: 100%;
+          max-height: 300px;
+          border-radius: 8px;
+          margin-top: 8px;
+          object-fit: contain;
+        }
+      }
     }
 
     &.error .text {
@@ -340,15 +395,13 @@ body.light_mode {
       background: var(--secondary-hover-color);
     }
   }
+  #delete-chat-button {
+
+  position: right;
+  }
 
   #send-message-button {
-    position: absolute;
-    right: 0;
-    outline: none;
-    border: none;
-    transform: scale(0);
-    background: transparent;
-    transition: transform 0.2s ease;
+   
 
     .typing-input:valid ~ & {
       transform: scale(1);
@@ -577,55 +630,7 @@ body {
   }
 }
 
-.suggestion-list {
-  width: 100%;
-  list-style: none;
-  display: flex;
-  gap: 1.25rem;
-  margin-top: 9.5vh;
-  overflow: hidden;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
 
-  .suggestion {
-    cursor: pointer;
-    padding: 1.25rem;
-    width: 222px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    border-radius: 0.75rem;
-    justify-content: space-between;
-    background: rgb(114, 106, 106);
-    transition: 0.2s ease;
-
-    &:hover {
-      background: blue;
-    }
-
-    :where(.text, .icon) {
-      font-weight: 400;
-      color: var(--text-color);
-    }
-
-    .icon {
-      width: 42px;
-      height: 42px;
-      display: flex;
-      font-size: 1.3rem;
-      margin-top: 2.5rem;
-      align-self: flex-end;
-      align-items: center;
-      border-radius: 50%;
-      justify-content: center;
-      color: var(--text-color);
-      background: var(--primary-color);
-      font-family: 'Material Symbols Rounded', sans-serif;
-    }
-  }
-}
 
 .chat-list {
   margin: 0 auto;
@@ -642,14 +647,61 @@ body {
 
     .message-content {
       display: flex;
-      gap: 1.5rem;
-      width: 100%;
-      align-items: center;
-    }
+      gap: 12px;
+      align-items: flex-start;
+      
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-    .text {
-      color: var(--text-color);
-      white-space: pre-wrap;
+      .message-text-content {
+        flex: 1;
+        
+        .post-section {
+          margin-bottom: 1rem;
+          padding: 1rem;
+          background: var(--secondary-color);
+          border-radius: 8px;
+          position: relative;
+
+          h4 {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+          }
+
+          .text {
+            margin: 0;
+            line-height: 1.5;
+            white-space: pre-wrap;
+          }
+
+          .icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            margin: 0;
+            visibility: visible;
+          }
+        }
+
+        .text {
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        .message-image {
+          max-width: 100%;
+          max-height: 300px;
+          border-radius: 8px;
+          margin-top: 8px;
+          object-fit: contain;
+        }
+      }
     }
 
     &.error .text {
@@ -789,13 +841,7 @@ body {
   }
 
   #send-message-button {
-    position: absolute;
-    right: 0;
-    outline: none;
-    border: none;
-    transform: scale(0);
-    background: transparent;
-    transition: transform 0.2s ease;
+    
 
     .typing-input:valid ~ & {
       transform: scale(1);
@@ -995,3 +1041,5 @@ p {
     background-position: 800px 0;
   }
 }
+
+

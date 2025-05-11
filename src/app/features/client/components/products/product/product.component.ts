@@ -28,7 +28,7 @@ export class ProductComponent {
       
       return;
     }
-
+   console.log(this.route.snapshot.paramMap)
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
       this.loadProduct(productId);

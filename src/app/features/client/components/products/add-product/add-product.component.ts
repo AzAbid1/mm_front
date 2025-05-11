@@ -26,6 +26,7 @@ export class AddProductComponent {
       name: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
       category: ['', Validators.required],
+      description: [''],
       images: this.fb.array([this.fb.control('')]) // Initialize with one image field
     });
   }
@@ -91,6 +92,7 @@ export class AddProductComponent {
         name: this.productForm.value.name,
         price: this.productForm.value.price,
         category: this.productForm.value.category,
+        description: this.productForm.value.description,
         user: currentUser._id
       };
 

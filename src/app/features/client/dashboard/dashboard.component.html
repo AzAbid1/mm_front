@@ -21,7 +21,7 @@
     <p class="subtitle">How can I help you today?</p>
     <ul class="suggestion-list">
       <li class="suggestion" *ngFor="let suggestion of suggestions" (click)="handleOutgoingChat(suggestion.text)">
-        <img src="https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="easter bunny">
+        <img src={{suggestion.image}} alt="easter bunny">
         <h4 class="text">{{ suggestion.text }}</h4>
         <span class="icon material-symbols-rounded">{{ suggestion.icon }}</span>
       </li>

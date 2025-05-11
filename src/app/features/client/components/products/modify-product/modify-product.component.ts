@@ -32,6 +32,7 @@ export class ModifyProductComponent {
       name: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
       category: ['', Validators.required],
+      description: [''],
       images: this.fb.array([])
     });
   }
@@ -73,7 +74,8 @@ export class ModifyProductComponent {
         this.productForm.patchValue({
           name: product.name,
           price: product.price,
-          category: product.category
+          category: product.category,
+          description: product.description
         });
         this.existingImageUrls = product.imageUrls || [];
         this.updateImageCounts();
@@ -156,7 +158,8 @@ export class ModifyProductComponent {
       const productData = {
         name: this.productForm.value.name,
         price: this.productForm.value.price,
-        category: this.productForm.value.category
+        category: this.productForm.value.category,
+        description: this.productForm.value.description
       };
 
       const validFiles = this.selectedFiles.filter(file => file !== null) as File[];

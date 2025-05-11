@@ -1,13 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LoadingComponent } from '../components/loading/loading.component';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Product, ProductService } from '../../../core/services/product.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { SessionService } from '../../../core/services/session.service';
 
 interface ChatMessage {
   content: string;
@@ -45,20 +49,24 @@ export class DashboardComponent implements OnInit {
   chatMessages: ChatMessage[] = [];
   isResponseGenerating = false;
   isLightMode = false;
+  products: Product[] = [];
   suggestions = [
-    { text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
-    { text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
-    { text: 'Can you help me find the latest news on web development?', icon: 'explore' },
-    { text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' } ,
-    { text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' }
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' , text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Can you help me find the latest news on web development?', icon: 'explore' },
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' } ,
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' }
   ];
 
-  @ViewChild(LoadingComponent) loadingComponent!: LoadingComponent;
 
-  private API_KEY = 'PASTE-YOUR-API-KEY'; // Replace with your API key
-  private API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.API_KEY}`;
-
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder, 
+    private http: HttpClient,
+    private productService: ProductService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private sessionService: SessionService
+  ) {
     this.imageGenForm = this.fb.group({
       product_name: ['', Validators.required],
       product_desc: ['', Validators.required],
@@ -74,6 +82,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDataFromLocalStorage();
+    this.loadProduct();
   }
 
   // Load theme and chat data from local storage
@@ -176,6 +185,7 @@ export class DashboardComponent implements OnInit {
       const formData = this.imageGenForm.value;
       formData.product_name = userMessage;
       formData.product_desc = userMessage;
+      console.log(userMessage)
       this.http.post('http://localhost:8002/generate-image', formData).subscribe({
         next: (response: any) => {
           this.responseMessage = response.message;
@@ -240,17 +250,51 @@ export class DashboardComponent implements OnInit {
         next: (response: any) => {
           this.responseMessage = response.message;
           this.image = response.image || null;
-          this.isLoading = false;
-          if (this.loadingComponent) {
-            this.loadingComponent.ngOnInit();
-          }
+         
+         
         },
         
         error: (error) => {
           this.responseMessage = `Error: ${error.error.detail || error.message}`;
           this.image = null;
-          this.isLoading = false;
+         
           console.error('HTTP Error:', error);
+        }
+      });
+    }
+  }
+
+  loadProduct(): void {
+    const currentUser = this.sessionService.currentUserSig()
+    const productId = currentUser?._id;
+    console.log(currentUser);
+    console.log(productId);
+    if (productId) {
+      console.log("aaaaaaaaaaaaa");
+      this.productService.getAllProducts(productId).subscribe({
+        next: (products) => {
+          this.products = products;
+          this.suggestions = products.map(product => ({
+            image: product.imageUrls?.[0] || 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+            text: `${product.name} - ${product.category} - ${product.description}`,
+            icon: 'shopping_cart'
+          }));
+          console.log(this.products);
+          // You can use the products data here
+          if (this.products.length > 0) {
+            this.imageGenForm.patchValue({
+              product_name: this.products[0].name,
+              product_desc: this.products[0].description
+            });
+          }
+        },
+        error: (error) => {
+          this.snackBar.open(error.message || 'Failed to load product', 'Close', {
+            duration: 3000,
+            panelClass: 'snackbar-error',
+            horizontalPosition: 'end',
+            verticalPosition: 'bottom'
+          });
         }
       });
     }

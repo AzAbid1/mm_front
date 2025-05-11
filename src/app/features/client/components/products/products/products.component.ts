@@ -23,7 +23,7 @@ export class ProductsComponent {
     if (!currentUser?._id) {
       return;
     }
-
+   
     this.loadProducts(currentUser._id);
   }
 

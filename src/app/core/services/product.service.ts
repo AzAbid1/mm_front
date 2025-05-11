@@ -11,6 +11,7 @@ export interface Product {
   imageUrls?: string[];
   price: number;
   category: string;
+  description: string;
   user: string;
   createdAt?: string;
   updatedAt?: string;
@@ -32,12 +33,15 @@ export class ProductService {
   constructor(private http: HttpClient) {}
 
   // Create a new product
-  createProduct(productData: { name: string; price: number; category: string; user: string }, images: File[]): Observable<Product> {
+  createProduct(productData: { name: string; price: number; category: string; description: string; user: string }, images: File[]): Observable<Product> {
     const formData = new FormData();
     formData.append('name', productData.name);
     formData.append('price', productData.price.toString());
     formData.append('category', productData.category);
     formData.append('user', productData.user);
+    
+  formData.append('description', productData.description);
+    
 
     // Append up to 5 images
     images.forEach((file, index) => {
@@ -53,15 +57,18 @@ export class ProductService {
   }
 
    // Update an existing product
-   updateProduct(id: string, productData: { name: string; price: number; category: string }, images?: File[], deleteImages?: string[]): Observable<Product> {
+   updateProduct(id: string, productData: { name: string; price: number; category: string; description: string }, images?: File[], deleteImages?: string[]): Observable<Product> {
     const formData = new FormData();
     formData.append('name', productData.name);
     formData.append('price', productData.price.toString());
     formData.append('category', productData.category);
+    
+    formData.append('description', productData.description);
+    
     if (deleteImages && deleteImages.length > 0) {
       formData.append('deleteImages', JSON.stringify(deleteImages));
     }
-
+    
     // Append images if provided
     if (images && images.length > 0) {
       images.forEach((file, index) => {
@@ -70,7 +77,7 @@ export class ProductService {
         }
       });
     }
-
+    console.log(productData)
     return this.http.put<ApiResponse<Product>>(`${this.apiUrl}/products/${id}`, formData).pipe(
       map(response => this.transformProduct(response.product!)),
       catchError(this.handleError)

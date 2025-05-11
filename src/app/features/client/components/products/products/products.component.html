@@ -24,6 +24,7 @@
             </div>
           </div>
           <p class="price">Price: ${{ product.price.toFixed(2) }}</p>
+          <p *ngIf="product.description" class="description">{{ product.description | slice:0:100 }}{{ product.description.length > 100 ? '...' : '' }}</p>
         </mat-card-content>
       </mat-card>
       <mat-card class="add-product-card" (click)="navigateToAddProduct()">

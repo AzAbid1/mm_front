@@ -21,8 +21,9 @@
     <p class="subtitle">How can I help you today?</p>
     <ul class="suggestion-list">
       <li class="suggestion" *ngFor="let suggestion of suggestions" (click)="handleOutgoingChat(suggestion.text)">
-        <img src={{suggestion.image}} alt="easter bunny">
-        <h4 class="text">{{ suggestion.text }}</h4>
+        <img src={{suggestion.image}} alt="easter bunny" style="width: 150px; align-self: center;">
+        <h1 class="text" style="align-self: center;">{{ suggestion.name }}</h1><br>
+        <h4 class="text"  style="align-self: right;">{{ suggestion.text }}</h4>
         <span class="icon material-symbols-rounded">{{ suggestion.icon }}</span>
       </li>
     </ul>
@@ -31,19 +32,40 @@
   <div class="chat-list">
     <div class="message" *ngFor="let message of chatMessages" [class.incoming]="message.isIncoming" [class.outgoing]="!message.isIncoming" [class.loading]="message.isLoading" [class.error]="message.isError">
       <div class="message-content">
-      <div class="message-text-content">
+        <div class="message-text-content">
           <div *ngIf="!message.isLoading && message.facebookPost" class="post-section">
             <h4>Facebook Post</h4>
             <p class="text">{{ message.facebookPost }}</p>
-            <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.facebookPost})">content_copy</span>
+            <div class="post-actions">
+              <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.facebookPost})">content_copy</span>
+              <button class="share-button facebook" (click)="shareToFacebook(message)">
+                <span class="material-symbols-rounded">share</span>
+                Share to Facebook
+              </button>
+            </div>
+            <div class="posting-time" *ngIf="message.facebookPostingTime">
+              <span class="material-symbols-rounded">schedule</span>
+              <p>Best time to post: {{ message.facebookPostingTime }}</p>
+            </div>
           </div>
           <div *ngIf="!message.isLoading && message.instagramPost" class="post-section">
             <h4>Instagram Post</h4>
             <p class="text">{{ message.instagramPost }}</p>
-            <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.instagramPost})">content_copy</span>
+            <div class="post-actions">
+              <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.instagramPost})">content_copy</span>
+              <button class="share-button instagram" (click)="shareToInstagram(message)">
+                <span class="material-symbols-rounded">share</span>
+                Share to Instagram
+              </button>
+            </div>
+            <div class="posting-time" *ngIf="message.instagramPostingTime">
+              <span class="material-symbols-rounded">schedule</span>
+              <p>Best time to post: {{ message.instagramPostingTime }}</p>
+            </div>
           </div>
-          <img *ngIf="message.image" [src]="message.image" alt="Generated image" class="message-image">
+          <img *ngIf="message.image" [src]="message.image" alt="Generated image" class="message-image" (click)="openImagePopup(message.image)" style="cursor: pointer;">
           <div class="loading-indicator" *ngIf="message.isLoading">
+            <div class="loading-bar"></div>
             <div class="loading-bar"></div>
             <div class="loading-bar"></div>
             <div class="loading-bar"></div>
@@ -54,6 +76,8 @@
     </div>
   </div>
 
+  <!-- Add posting time prediction section -->
+  
   
   </div>
   

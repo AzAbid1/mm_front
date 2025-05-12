@@ -20,7 +20,7 @@ export interface PostingTimeResponse {
 })
 export class PostingTimeService {
   // API base URL (update based on your environment)
-  private readonly apiUrl = 'http://localhost:8003';
+  private readonly apiUrl = 'http://localhost:8004';
 
   constructor(private http: HttpClient) {}
 

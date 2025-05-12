@@ -1,17 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Product, ProductService } from '../../../core/services/product.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { SessionService } from '../../../core/services/session.service';
+import { PostingTimeService, PostingTimeRequest } from '../../../core/services/posting-time.service';
+import { ImagePopupComponent } from './image-popup/image-popup.component';
 
 interface ChatMessage {
   content: string;
@@ -21,6 +23,8 @@ interface ChatMessage {
   image?: string;
   facebookPost?: string;
   instagramPost?: string;
+  facebookPostingTime?: string;
+  instagramPostingTime?: string;
 }
 
 interface ApiResponse {
@@ -35,7 +39,8 @@ interface ApiResponse {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -51,13 +56,16 @@ export class DashboardComponent implements OnInit {
   isLightMode = false;
   products: Product[] = [];
   suggestions = [
-    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' , text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
-    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
+    { name:"product",image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' , text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
+    { name:"product",image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
     { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Can you help me find the latest news on web development?', icon: 'explore' },
     { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' } ,
     { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' }
   ];
-
+  selectedPlatform: 'facebook' | 'instagram' = 'facebook';
+  selectedTone: string = 'enthusiastic';
+  predictedTime: string | null = null;
+  isPredicting = false;
 
   constructor(
     private fb: FormBuilder, 
@@ -65,7 +73,9 @@ export class DashboardComponent implements OnInit {
     private productService: ProductService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private postingTimeService: PostingTimeService,
+    private dialog: MatDialog
   ) {
     this.imageGenForm = this.fb.group({
       product_name: ['', Validators.required],
@@ -137,18 +147,23 @@ export class DashboardComponent implements OnInit {
 
       if (response) {
         const content = response.output;
-        // Split the content into Facebook and Instagram posts, removing the Hashtags section
         const facebookMatch = content.match(/\*\*Facebook Post Description:\*\* (.*?)(?=\*\*Instagram Post Description:\*\*|$)/s);
         const instagramMatch = content.match(/\*\*Instagram Post Description:\*\* (.*?)(?=Hashtags:|$)/s);
         
-        // Clean up the posts by removing any trailing hashtags section
         const cleanFacebookPost = facebookMatch ? facebookMatch[1].trim().replace(/\s*Hashtags:.*$/, '') : '';
         const cleanInstagramPost = instagramMatch ? instagramMatch[1].trim().replace(/\s*Hashtags:.*$/, '') : '';
         
         message.facebookPost = cleanFacebookPost;
         message.instagramPost = cleanInstagramPost;
+
+        // Predict posting times for both platforms
+        if (message.facebookPost) {
+          this.predictPostingTime('facebook', message);
+        }
+        if (message.instagramPost) {
+          this.predictPostingTime('instagram', message);
+        }
         
-        // Show the content with proper formatting
         const formattedContent = `Facebook Post:\n${message.facebookPost}\n\nInstagram Post:\n${message.instagramPost}`;
         this.showTypingEffect(formattedContent, message);
       }
@@ -181,7 +196,6 @@ export class DashboardComponent implements OnInit {
     this.scrollToBottom();
 
     if (!this.imageGenForm.valid) {
-      
       const formData = this.imageGenForm.value;
       formData.product_name = userMessage;
       formData.product_desc = userMessage;
@@ -190,7 +204,6 @@ export class DashboardComponent implements OnInit {
         next: (response: any) => {
           this.responseMessage = response.message;
           this.image = response.image || null;
-          // Add the image to the last message
           if (this.image && this.chatMessages.length > 0) {
             this.chatMessages[this.chatMessages.length - 1].image = this.image;
             this.saveChatsToLocalStorage();
@@ -230,7 +243,34 @@ export class DashboardComponent implements OnInit {
       this.loadDataFromLocalStorage();
     }
   }
+  
+  shareToFacebook(message: ChatMessage): void {
+    if (!message.facebookPost) return;
 
+    const shareUrl = 'https://www.facebook.com/sharer/sharer.php';
+    const text = `${message.facebookPost}\n\nBest time to post: ${message.facebookPostingTime || 'Not predicted yet'}`;
+    const url = `${shareUrl}?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
+    
+    window.open(url, '_blank', 'width=600,height=400');
+  }
+
+  shareToInstagram(message: ChatMessage): void {
+    if (!message.instagramPost) return;
+
+    // Instagram doesn't have a direct share URL, so we'll copy the content to clipboard
+    const text = `${message.instagramPost}\n\nBest time to post: ${message.instagramPostingTime || 'Not predicted yet'}`;
+    navigator.clipboard.writeText(text).then(() => {
+      this.snackBar.open('Content copied! You can now paste it to Instagram', 'Close', {
+        duration: 3000,
+        panelClass: 'snackbar-success'
+      });
+    }).catch(() => {
+      this.snackBar.open('Failed to copy content', 'Close', {
+        duration: 3000,
+        panelClass: 'snackbar-error'
+      });
+    });
+  }
   // Scroll to bottom of chat list
   private scrollToBottom(): void {
     setTimeout(() => {
@@ -276,7 +316,8 @@ export class DashboardComponent implements OnInit {
           this.products = products;
           this.suggestions = products.map(product => ({
             image: product.imageUrls?.[0] || 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-            text: `${product.name} - ${product.category} - ${product.description}`,
+            text: ` ${product.description}`,
+            name: product.name,
             icon: 'shopping_cart'
           }));
           console.log(this.products);
@@ -298,5 +339,35 @@ export class DashboardComponent implements OnInit {
         }
       });
     }
+  }
+
+  predictPostingTime(platform: 'facebook' | 'instagram', message: ChatMessage): void {
+    const request: PostingTimeRequest = {
+      platform: platform,
+      product: this.products[0]?.name || '',
+      tone: 'enthusiastic'
+    };
+
+    this.postingTimeService.predictPostingTime(request).subscribe({
+      next: (time) => {
+        if (platform === 'facebook') {
+          message.facebookPostingTime = time;
+        } else {
+          message.instagramPostingTime = time;
+        }
+        this.saveChatsToLocalStorage();
+      },
+      error: (error) => {
+        console.error(`Failed to predict ${platform} posting time:`, error);
+      }
+    });
+  }
+
+  openImagePopup(imageUrl: string): void {
+    this.dialog.open(ImagePopupComponent, {
+      data: { imageUrl },
+      width: '600px',
+      panelClass: 'image-popup-dialog'
+    });
   }
 }

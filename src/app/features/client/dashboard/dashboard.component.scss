@@ -175,7 +175,7 @@ body.light_mode {
   margin: 0 auto;
   max-width: 980px;
   padding: 2rem 1rem 12rem;
-  max-height: 100vh;
+  
   overflow-y: auto;
   scrollbar-color: #000000 transparent;
   
@@ -702,8 +702,9 @@ body {
 .chat-list {
   margin: 0 auto;
   max-width: 980px;
+  
   padding: 2rem 1rem 12rem;
-  max-height: 100vh;
+  
   overflow-y: auto;
   scrollbar-color: #000000 transparent;
 

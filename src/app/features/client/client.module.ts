@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { MatTableModule } from '@angular/material/table';
 import { ClientRoutingModule } from './client-routing.module';
 import { HeaderComponent } from './components/header/header.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -59,7 +59,8 @@ import { DeleteDialogComponent } from './components/products/delete-dialog/delet
     MatFormFieldModule,
     MatSnackBarModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTableModule
   ]
 })
 export class ClientModule { }

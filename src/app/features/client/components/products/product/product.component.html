@@ -1,48 +1,198 @@
 <div class="product-container">
-    <div class="header">
-      <h1>Product Details</h1>
-      <button mat-raised-button color="secondary" (click)="navigateBack()">
-        Back to Products
-      </button>
-    </div>
-    <mat-card class="product-card" *ngIf="product">
-      <mat-card-header>
-        <mat-card-title>{{ product.name }}</mat-card-title>
-        <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="details">
-          <p><strong>Price:</strong> ${{ product.price.toFixed(2) }}</p>
-          <p><strong>Created:</strong> {{ product.createdAt | date:'short' }}</p>
-          <p><strong>Updated:</strong> {{ product.updatedAt | date:'short' }}</p>
-          <p><strong>description:</strong> {{ product.description  }}</p>
-          
-        </div>
-        <div class="images-container">
-          <h3>Images</h3>
-          <div class="images-grid">
-            <img
-              *ngFor="let url of product.imageUrls"
-              [src]="url"
-              alt="Product Image"
-              class="product-image"
-            />
-            <div *ngIf="!product.imageUrls || product.imageUrls.length === 0" class="no-image">
-              No Images Available
-            </div>
+  <div class="header">
+    <h1>Product Details</h1>
+    <button mat-raised-button color="secondary" (click)="navigateBack()">
+      Back to Products
+    </button>
+  </div>
+  <mat-card class="product-card" *ngIf="product">
+    <mat-card-header>
+      <mat-card-title>{{ product.name }}</mat-card-title>
+      <mat-card-subtitle>{{ product.category | titlecase }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="details">
+        <p><strong>Price:</strong> ${{ product.price.toFixed(2) }}</p>
+        <p><strong>Created:</strong> {{ product.createdAt | date:'short' }}</p>
+        <p><strong>Updated:</strong> {{ product.updatedAt | date:'short' }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+      </div>
+      <div class="images-container">
+        <h3>Images</h3>
+        <div class="images-grid">
+          <img
+            *ngFor="let url of product.imageUrls"
+            [src]="url"
+            alt="Product Image"
+            class="product-image"
+          />
+          <div *ngIf="!product.imageUrls || product.imageUrls.length === 0" class="no-image">
+            No Images Available
           </div>
         </div>
-      </mat-card-content>
-      <mat-card-actions class="actions">
-        <button mat-raised-button color="primary" (click)="navigateToEdit()">
-          Modify
-        </button>
-        <button mat-raised-button color="warn" (click)="openDeleteDialog()">
-          Delete
-        </button>
-      </mat-card-actions>
-    </mat-card>
-    <div *ngIf="!product" class="loading">
-      Loading product details...
+      </div>
+    </mat-card-content>
+    <mat-card-actions class="actions">
+      <button mat-raised-button color="primary" (click)="navigateToEdit()">
+        Modify
+      </button>
+      <button mat-raised-button color="warn" (click)="openDeleteDialog()">
+        Delete
+      </button>
+    </mat-card-actions>
+  </mat-card>
+  <div *ngIf="!product" class="loading">
+    Loading product details...
+  </div>
+
+  <!-- Recommendation Form Section -->
+  <div class="recommendation-section" *ngIf="product">
+    <h2>Get Social Media Recommendation</h2>
+    <form [formGroup]="recommendationForm" (ngSubmit)="getRecommendation()">
+      <mat-form-field appearance="outline">
+        <mat-label>Product</mat-label>
+        <input matInput formControlName="product" readonly>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let cat of validCategories" [value]="cat">{{ cat | titlecase }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Tone</mat-label>
+        <mat-select formControlName="tone">
+          <mat-option value="auto">Auto</mat-option>
+          <mat-option value="professional">Professional</mat-option>
+          <mat-option value="casual">Casual</mat-option>
+          <mat-option value="friendly">Friendly</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Platform</mat-label>
+        <mat-select formControlName="platform">
+          <mat-option value="instagram">Instagram</mat-option>
+          <mat-option value="twitter">Twitter</mat-option>
+          <mat-option value="facebook">Facebook</mat-option>
+          <mat-option value="linkedin">LinkedIn</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Emotion</mat-label>
+        <mat-select formControlName="emotion">
+          <mat-option value="joie">Joie</mat-option>
+          <mat-option value="excitement">Excitement</mat-option>
+          <mat-option value="trust">Trust</mat-option>
+          <mat-option value="inspiration">Inspiration</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Base Price</mat-label>
+        <input matInput type="number" formControlName="base_price">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" formControlName="date">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Language</mat-label>
+        <mat-select formControlName="lang">
+          <mat-option value="français">Français</mat-option>
+          <mat-option value="english">English</mat-option>
+          <mat-option value="español">Español</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit" [disabled]="recommendationForm.invalid || isLoadingRecommendation">
+        {{ isLoadingRecommendation ? 'Loading...' : 'Get Recommendation' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Recommendation Display Section -->
+  <div class="recommendation-result" *ngIf="recommendation || recommendationError">
+    <h2>Recommendation Result</h2>
+    <div *ngIf="isLoadingRecommendation" class="loading">
+      Fetching recommendation...
+    </div>
+    <div *ngIf="recommendationError" class="error">
+      <p>Error: {{ recommendationError }}</p>
+    </div>
+    <div *ngIf="recommendation && !isLoadingRecommendation" class="result">
+      <h3>Tone</h3>
+      <p><strong>Primary:</strong> {{ recommendation.recommendations.tone.primary }}</p>
+      <p><strong>Justification:</strong> {{ recommendation.recommendations.tone.justification }}</p>
+
+      <h3>Content</h3>
+      <p><strong>Description:</strong> {{ recommendation.recommendations.content.description }}</p>
+      <p><strong>CTA:</strong> {{ recommendation.recommendations.content.cta }}</p>
+      <p><strong>Format:</strong> {{ recommendation.recommendations.content.format.type }} - {{ recommendation.recommendations.content.format.desc }}</p>
+
+      <h3>Visual</h3>
+      <p><strong>Description:</strong> {{ recommendation.recommendations.visual.visual_description }}</p>
+      <p><strong>Mood Board:</strong> Colors: {{ recommendation.recommendations.visual.mood_board.colors.join(', ') }}; Textures: {{ recommendation.recommendations.visual.mood_board.textures.join(', ') }}; Vibes: {{ recommendation.recommendations.visual.mood_board.vibes }}</p>
+
+      <h3>Hashtags</h3>
+      <p><strong>Tags:</strong> {{ recommendation.recommendations.hashtags.tags.join(', ') }}</p>
+      <p><strong>Analysis:</strong></p>
+      <ul>
+        <li *ngFor="let tag of recommendation.recommendations.hashtags.analysis">
+          {{ tag.hashtag }}: {{ tag.reach }} reach
+        </li>
+      </ul>
+
+      <h3>Posting Time</h3>
+      <p><strong>Hour:</strong> {{ recommendation.recommendations.posting_time.hour }}:00</p>
+      <p><strong>Justification:</strong> {{ recommendation.recommendations.posting_time.justification }}</p>
+
+      <h3>Strategy</h3>
+      <p><strong>Campaign:</strong> {{ recommendation.recommendations.strategy.campaign_name }}</p>
+      <p><strong>Key Strategies:</strong> {{ recommendation.recommendations.strategy.key_strategies.join(', ') }}</p>
+      <p><strong>Influencer:</strong> {{ recommendation.recommendations.strategy.influenceur }}</p>
+      <p><strong>Promotion:</strong> {{ recommendation.recommendations.strategy.promo }}</p>
+
+      <h3>Engagement</h3>
+      <p><strong>Predicted Engagement:</strong> {{ recommendation.recommendations.engagement.predicted_engagement }}%</p>
+      <p><strong>Reach:</strong> {{ recommendation.recommendations.engagement.reach }}</p>
+      <p><strong>Impressions:</strong> {{ recommendation.recommendations.engagement.impressions }}</p>
+      <p><strong>Interactions:</strong> {{ recommendation.recommendations.engagement.interactions }}</p>
+
+      <h3>Budget & ROI</h3>
+      <p><strong>Budget:</strong> ${{ recommendation.recommendations.budget_roi.budget.toFixed(2) }}</p>
+      <p><strong>ROI:</strong> {{ recommendation.recommendations.budget_roi.roi }}</p>
+
+      <h3>Coach</h3>
+      <p>{{ recommendation.recommendations.coach }}</p>
+
+      <h3>Weekly Plan</h3>
+      <mat-table [dataSource]="recommendation.recommendations.weekly_plan" *ngIf="recommendation.recommendations.weekly_plan.length > 0">
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.date }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="format">
+          <mat-header-cell *matHeaderCellDef>Format</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.format }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.description }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="cta">
+          <mat-header-cell *matHeaderCellDef>CTA</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.cta }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="hour">
+          <mat-header-cell *matHeaderCellDef>Hour</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.hour }}:00</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="priority">
+          <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.priority }}</mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="['date', 'format', 'description', 'cta', 'hour', 'priority']"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ['date', 'format', 'description', 'cta', 'hour', 'priority']"></mat-row>
+      </mat-table>
+      <p *ngIf="recommendation.recommendations.weekly_plan.length === 0">No weekly plan available.</p>
     </div>
   </div>
+</div>

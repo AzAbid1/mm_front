@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Product, ProductService } from '../../../../../core/services/product.service';
 import { SessionService } from '../../../../../core/services/session.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { RecommendationService } from '../../../../../core/services/recommendation.service';
+import { RecommendationDialogComponent } from '../recommendation-dialog/recommendation-dialog.component';
 
 @Component({
   selector: 'app-product',
@@ -21,14 +23,14 @@ export class ProductComponent {
   sessionService = inject(SessionService);
   snackBar = inject(MatSnackBar);
   dialog = inject(MatDialog);
+  recommendationService = inject(RecommendationService);
 
   ngOnInit(): void {
     const currentUser = this.sessionService.currentUserSig();
     if (!currentUser?._id) {
-      
       return;
     }
-   console.log(this.route.snapshot.paramMap)
+    console.log(this.route.snapshot.paramMap)
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
       this.loadProduct(productId);
@@ -92,6 +94,34 @@ export class ProductComponent {
               verticalPosition: 'bottom'
             });
           }
+        });
+      }
+    });
+  }
+
+  getRecommendations(): void {
+    if (!this.product) return;
+    console.log(this.product)
+    this.recommendationService.getRecommendations({
+      product: this.product.name,
+      category: this.product.category,
+      base_price: this.product.price,
+      emotion: "joie",
+      lang: 'français'
+    }).subscribe({
+      next: (response) => {
+        this.dialog.open(RecommendationDialogComponent, {
+          width: '800px',
+          maxHeight: '90vh',
+          data: { recommendations: response.recommendations }
+        });
+      },
+      error: (error) => {
+        this.snackBar.open(error.message || 'Failed to get recommendations', 'Close', {
+          duration: 3000,
+          panelClass: 'snackbar-error',
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom'
         });
       }
     });

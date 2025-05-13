@@ -40,6 +40,9 @@
         <button mat-raised-button color="warn" (click)="openDeleteDialog()">
           Delete
         </button>
+        <button mat-raised-button color="accent" (click)="getRecommendations()">
+          Get Marketing Recommendations
+        </button>
       </mat-card-actions>
     </mat-card>
     <div *ngIf="!product" class="loading">

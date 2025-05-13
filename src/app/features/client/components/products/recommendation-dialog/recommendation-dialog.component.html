@@ -1,0 +1,158 @@
+<h2 mat-dialog-title>Marketing Recommendations</h2>
+<mat-dialog-content>
+  <div *ngIf="data.recommendations">
+    <!-- Tone Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Tone</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Primary:</strong> {{ data.recommendations.tone.primary }}</p>
+        <p><strong>Justification:</strong> {{ data.recommendations.tone.justification }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Content Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Content</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Description:</strong> {{ data.recommendations.content.description }}</p>
+        <p><strong>CTA:</strong> {{ data.recommendations.content.cta }}</p>
+        <p><strong>Format:</strong> {{ data.recommendations.content.format.type }}</p>
+        <p><strong>Format Description:</strong> {{ data.recommendations.content.format.desc }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Visual Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Visual</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Description:</strong> {{ data.recommendations.visual.visual_description }}</p>
+        <div class="mood-board">
+          <h4>Mood Board</h4>
+          <p><strong>Colors:</strong> {{ data.recommendations.visual.mood_board.colors.join(', ') }}</p>
+          <p><strong>Textures:</strong> {{ data.recommendations.visual.mood_board.textures.join(', ') }}</p>
+          <p><strong>Vibes:</strong> {{ data.recommendations.visual.mood_board.vibes }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Hashtags Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Hashtags</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="hashtags">
+          <div *ngFor="let tag of data.recommendations.hashtags.tags" class="hashtag">
+            {{ tag }}
+          </div>
+        </div>
+        <mat-table [dataSource]="data.recommendations.hashtags.analysis" class="hashtag-table">
+          <ng-container matColumnDef="hashtag">
+            <mat-header-cell *matHeaderCellDef> Hashtag </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.hashtag}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="reach">
+            <mat-header-cell *matHeaderCellDef> Reach </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.reach}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="['hashtag', 'reach']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['hashtag', 'reach'];"></mat-row>
+        </mat-table>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Strategy Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Strategy</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Campaign:</strong> {{ data.recommendations.strategy.campaign_name }}</p>
+        <p><strong>Key Strategies:</strong></p>
+        <ul>
+          <li *ngFor="let strategy of data.recommendations.strategy.key_strategies">
+            {{ strategy }}
+          </li>
+        </ul>
+        <p><strong>Influencer:</strong> {{ data.recommendations.strategy.influenceur }}</p>
+        <p><strong>Promotion:</strong> {{ data.recommendations.strategy.promo }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Engagement Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Engagement Predictions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Predicted Engagement:</strong> {{ data.recommendations.engagement.predicted_engagement }}%</p>
+        <p><strong>Reach:</strong> {{ data.recommendations.engagement.reach }}</p>
+        <p><strong>Impressions:</strong> {{ data.recommendations.engagement.impressions }}</p>
+        <p><strong>Interactions:</strong> {{ data.recommendations.engagement.interactions }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Weekly Plan Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Weekly Plan</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-table [dataSource]="data.recommendations.weekly_plan" class="weekly-plan-table">
+          <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.date}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="format">
+            <mat-header-cell *matHeaderCellDef> Format </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.format}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="hour">
+            <mat-header-cell *matHeaderCellDef> Hour </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.hour}}h </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="priority">
+            <mat-header-cell *matHeaderCellDef> Priority </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.priority}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="['date', 'format', 'description', 'hour', 'priority']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['date', 'format', 'description', 'hour', 'priority'];"></mat-row>
+        </mat-table>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Budget ROI Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Budget & ROI</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Budget:</strong> ${{ data.recommendations.budget_roi.budget }}</p>
+        <p><strong>ROI:</strong> {{ data.recommendations.budget_roi.roi }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Coach Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>AI Coach</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ data.recommendations.coach }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Close</button>
+</mat-dialog-actions> 

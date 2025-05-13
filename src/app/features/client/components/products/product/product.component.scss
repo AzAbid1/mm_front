@@ -10,11 +10,11 @@ $card-background-color: #FFFFFF;
   flex-direction: column;
   min-height: 100vh;
   padding: $spacing-unit;
-  background-color: #e5e5f7;
+  background-color: #34349a;
   opacity: 0.8;
   background-image: radial-gradient(#444cf7 2px, #e5e5f7 2px);
   background-size: 50px 50px;
-
+ 
   .header {
     display: flex;
     justify-content: space-between;

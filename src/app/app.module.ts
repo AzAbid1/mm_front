@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { RecommendationService } from './core/services/recommendation.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { MatIconModule } from '@angular/material/icon';
     provideHttpClient(),
     provideEnvironmentInitializer((sessionStateService: SessionStateService = inject(SessionStateService)) => {
         sessionStateService.initializeSession();
-      })
+      }),
+    RecommendationService
   ],
   bootstrap: [AppComponent]
 })

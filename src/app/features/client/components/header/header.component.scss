@@ -1,70 +1,169 @@
+$primary-color: #4FC3F7; // Light blue for buttons, borders, and accents
+$secondary-color: #B3E5FC; // Softer light blue for hover/active states
+$accent-color: #0288D1; // Darker blue for links and hover effects
+$text-primary: #333333; // Dark gray for text
+$text-secondary: #FFFFFF; // White for text on dark backgrounds
+$background-color: rgba(255, 255, 255, 0.95); // Slightly opaque white for toolbar
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .header {
-    background-color: #b5d7eb; // White background like DataCamp
-    height: 64px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: $background-color;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 2rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  
-    .separator {
-        height: 32px;
-        margin: 0 16px;
-        background-color: #363232;
-        opacity: 0.7;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    max-width: 200px;
+    height: auto;
+    animation: pulse 2s ease infinite;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .separator {
+    height: 40px;
+    margin: 0 1.5rem;
+    background: lighten($text-primary, 40%);
+  }
+
+  .nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    button {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: $text-primary;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
       }
 
-    .header-content {
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      height: 100%;
-      width: 100%; // Ensure content spans full width
-  
-      .logo {
-        height: 40px;
-        margin-right: 16px;
-      }
-  
-      .nav-buttons {
-        display: flex;
-        align-items: center;
-  
-        button {
-          color: #1A2526; // Dark grey for inactive buttons
-          font-size: 14px;
-          font-weight: 500;
-          padding: 8px 16px;
-          text-transform: uppercase; // Match DataCamp's style
-          transition: background-color 0.3s;
-  
-          &:hover {
-            background-color: #E8ECEF; // Light grey hover effect
-          }
-  
-          &.active {
-            background-color: #1976D2; // Blue for active button
-            color: #FFFFFF; // White text for active button
-          }
-  
-          // Override Material's default border-radius
-          &.mat-mdc-button {
-            border-radius: 0 !important;
-          }
-        }
-      }
-  
-      .spacer {
-        flex: 1; // Pushes settings icon to the right
-      }
-  
-      // Style the settings icon
-      mat-icon-button {
-        color: #1A2526;
-  
-        &:hover {
-          background-color: #E8ECEF;
-        }
+      &.active {
+        background: linear-gradient(135deg, $primary-color, lighten($primary-color, 10%));
+        color: $text-secondary;
+        box-shadow: 0 2px 8px rgba($primary-color, 0.3);
       }
     }
   }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .mat-icon-button {
+    font-size: 1.4rem;
+    color: $text-primary;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba($primary-color, 0.1);
+      color: $primary-color;
+    }
+
+    mat-icon {
+      font-size: 1.4rem;
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+  }
+
+  ::ng-deep .mat-menu-panel {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: $background-color;
+
+    .mat-menu-item {
+      font-size: 1.1rem;
+      color: $text-primary;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0.5rem 1rem;
+
+    .logo {
+      max-width: 150px;
+    }
+
+    .separator {
+      margin: 0 1rem;
+    }
+
+    .nav-buttons {
+      gap: 1rem;
+
+      button {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+      }
+    }
+
+    .mat-icon-button {
+      font-size: 1.2rem;
+
+      mat-icon {
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem;
+
+    .logo {
+      max-width: 120px;
+    }
+
+    .separator {
+      margin: 0 0.5rem;
+    }
+
+    .nav-buttons {
+      gap: 0.5rem;
+
+      button {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+      }
+    }
+  }
+  }
+}

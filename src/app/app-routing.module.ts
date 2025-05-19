@@ -3,12 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { ClientGuard } from './core/guards/client.guard';
 import { AuthGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/client/dashboard/dashboard.component';
+import { LandingComponent } from './features/landing/landing.component';
+import { TrendsChartComponent } from './features/client/trends-chart/trends-chart.component';
 const routes: Routes = [
-    {
-        path: '',
-        redirectTo: 'auth',
-        pathMatch: 'full',
-    },
+    { path: '', component: LandingComponent },
     {
         path: "auth",
         loadChildren: () =>
@@ -21,7 +19,8 @@ const routes: Routes = [
         import("./features/client/client.module").then((m) => m.ClientModule),
         canActivate: [ClientGuard]
     },
-    { path: 'client/dashboard', component: DashboardComponent }
+    { path: 'client/dashboard', component: DashboardComponent},
+    { path: 'client/charts', component: TrendsChartComponent}
 ];
 
 @NgModule({

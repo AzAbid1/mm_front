@@ -58,7 +58,7 @@ export class GoogleSuccessComponent implements OnInit {
             this.router.navigateByUrl('/login');
           }
         });
-        this.router.navigateByUrl('/client');
+        this.router.navigateByUrl('/client/dashboard');
       } else {
         this.snackBar.open('Google login failed', 'Close', {
           duration: 3000,

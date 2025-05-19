@@ -1,0 +1,31 @@
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<section class="hero relative flex items-center justify-center min-h-screen overflow-hidden">
+    <video autoplay muted loop playsinline class="bg-video absolute inset-0 w-full h-full object-cover brightness-50 -z-10">
+        <source src="bg.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="login-btn fixed top-4 right-4 z-50">
+        <a href="/auth" class="text-white font-semibold text-lg md:text-xl hover:text-blue-300 transition-transform transform hover:scale-105">Login</a>
+    </div>
+
+    <div class="overlay bg-black bg-opacity-50 p-10 rounded-2xl text-white text-center max-w-3xl mx-4 animate-fadeIn space-y-6">
+        <h1 class="text-4xl md:text-6xl font-extrabold uppercase tracking-wide animate-pulse">Market Minds</h1>
+        <p class="text-xl md:text-2xl font-light typewriter">The Ultimate AI-Powered Marketing Platform</p>
+
+
+        <a href="/auth" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full transition-all duration-300">
+            Get Started Free
+        </a>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll('a[href^="/"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = this.getAttribute('href');
+        });
+    });
+</script>

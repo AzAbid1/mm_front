@@ -1,0 +1,25 @@
+
+<video autoplay muted loop playsinline id="background-video">
+  <source src="bgLogin.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+<div class="container">
+  <div class="content">
+    <div class="dashboard-container">
+      <h1 class="dashboard-title">Market Mind Trends</h1>
+      <p class="dashboard-subtitle">
+        Stay ahead of the curve with real-time insights and market trend forecasts.
+      </p>
+    </div>
+
+    <p class="dashboard-description">
+      Explore our detailed market trend analysis through dynamic line charts. 
+      Use the forecast form below to customize your view and predict future market movements.
+    </p>
+
+    <div class="chart-container">
+      <sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
+    </div>
+  </div>
+</div>

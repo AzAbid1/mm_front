@@ -28,7 +28,7 @@ interface ChatMessage {
 }
 
 interface ApiResponse {
-  output: string;
+  content: string; // Updated to match actual response structure
 }
 
 @Component({
@@ -56,11 +56,11 @@ export class DashboardComponent implements OnInit {
   isLightMode = false;
   products: Product[] = [];
   suggestions = [
-    { name:"product",image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' , text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
-    { name:"product",image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
-    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Can you help me find the latest news on web development?', icon: 'explore' },
-    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' } ,
-    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' }
+    { name: "product", image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', text: 'Help me plan a game night with my 5 best friends for under $100.', icon: 'draw' },
+    { name: "product", image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', text: 'What are the best tips to improve my public speaking skills?', icon: 'lightbulb' },
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', text: 'Can you help me find the latest news on web development?', icon: 'explore' },
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' },
+    { image: 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', text: 'Write JavaScript code to sum all elements in an array.', icon: 'code' }
   ];
   selectedPlatform: 'facebook' | 'instagram' = 'facebook';
   selectedTone: string = 'enthusiastic';
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
   isPredicting = false;
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private http: HttpClient,
     private productService: ProductService,
     private snackBar: MatSnackBar,
@@ -95,7 +95,6 @@ export class DashboardComponent implements OnInit {
     this.loadProduct();
   }
 
-  // Load theme and chat data from local storage
   private loadDataFromLocalStorage(): void {
     const savedChats = localStorage.getItem('saved-chats');
     this.isLightMode = localStorage.getItem('themeColor') === 'light_mode';
@@ -106,17 +105,15 @@ export class DashboardComponent implements OnInit {
     }
     this.scrollToBottom();
   }
-  // Save chats to local storage
+
   private saveChatsToLocalStorage(): void {
     localStorage.setItem('saved-chats', JSON.stringify(this.chatMessages));
   }
 
-  // Create a new message
   private createMessage(content: string, isIncoming: boolean, isLoading = false, isError = false): ChatMessage {
     return { content, isIncoming, isLoading, isError };
   }
 
-  // Show typing effect for incoming messages
   private showTypingEffect(text: string, message: ChatMessage): void {
     const words = text.split(' ');
     let currentWordIndex = 0;
@@ -133,10 +130,10 @@ export class DashboardComponent implements OnInit {
     }, 75);
   }
 
-  // Fetch response from the API
   private async generateAPIResponse(message: ChatMessage): Promise<void> {
     try {
-      console.log(message);
+      console.log('Sending message:', message.content);
+
       const response = await this.http
         .post<ApiResponse>(
           'http://localhost:8001/PostDescreption',
@@ -145,16 +142,33 @@ export class DashboardComponent implements OnInit {
         )
         .toPromise();
 
-      if (response) {
-        const content = response.output;
-        const facebookMatch = content.match(/\*\*Facebook Post Description:\*\* (.*?)(?=\*\*Instagram Post Description:\*\*|$)/s);
-        const instagramMatch = content.match(/\*\*Instagram Post Description:\*\* (.*?)(?=Hashtags:|$)/s);
-        
-        const cleanFacebookPost = facebookMatch ? facebookMatch[1].trim().replace(/\s*Hashtags:.*$/, '') : '';
-        const cleanInstagramPost = instagramMatch ? instagramMatch[1].trim().replace(/\s*Hashtags:.*$/, '') : '';
-        
-        message.facebookPost = cleanFacebookPost;
-        message.instagramPost = cleanInstagramPost;
+      console.log('Raw response:', response);
+
+      if (response && response.content) {
+        let content = response.content;
+        // Sanitize content to escape braces for Angular template
+        content = content.replace(/{/g, '{{').replace(/}/g, '}}');
+
+        // Split content into Facebook and Instagram posts
+        let facebookPost = '';
+        let instagramPost = '';
+        if (content.includes('**Facebook Post Description:**') && content.includes('**Instagram Post Description:**')) {
+          const [facebookPart, instagramPart] = content.split('**Instagram Post Description:**');
+          facebookPost = facebookPart.replace('**Facebook Post Description:**', '').trim();
+          instagramPost = instagramPart.trim();
+        } else {
+          // Fallback: treat entire content as a single message
+          facebookPost = content;
+          instagramPost = content;
+        }
+
+        console.log('Clean Facebook Post:', facebookPost);
+        console.log('Clean Instagram Post:', instagramPost);
+
+        // Assign to message
+        message.facebookPost = facebookPost;
+        message.instagramPost = instagramPost;
+        message.content = `${facebookPost}\n\n${instagramPost}`; // Set content for fallback display
 
         // Predict posting times for both platforms
         if (message.facebookPost) {
@@ -163,19 +177,23 @@ export class DashboardComponent implements OnInit {
         if (message.instagramPost) {
           this.predictPostingTime('instagram', message);
         }
-        
-        const formattedContent = `Facebook Post:\n${message.facebookPost}\n\nInstagram Post:\n${message.instagramPost}`;
-        this.showTypingEffect(formattedContent, message);
+
+        // Display with typing effect
+        this.showTypingEffect(message.content, message);
+      } else {
+        throw new Error('No content in response');
       }
     } catch (error: any) {
+      console.error('Error occurred during API response generation:', error);
       this.isResponseGenerating = false;
       message.content = error.error?.message || 'An error occurred';
       message.isError = true;
       message.isLoading = false;
+      this.saveChatsToLocalStorage();
+      this.scrollToBottom();
     }
   }
 
-  // Show loading animation
   private showLoadingAnimation(userMessage: string): void {
     const loadingMessage = this.createMessage(userMessage, true, true);
     this.chatMessages.push(loadingMessage);
@@ -183,11 +201,9 @@ export class DashboardComponent implements OnInit {
     this.generateAPIResponse(loadingMessage);
   }
 
-  // Handle outgoing chat
   handleOutgoingChat(suggestion?: string): void {
     const userMessage = suggestion || this.chatForm.get('message')?.value?.trim();
     if (!userMessage || this.isResponseGenerating) return;
-
     this.isResponseGenerating = true;
     const outgoingMessage = this.createMessage(userMessage, false);
     this.chatMessages.push(outgoingMessage);
@@ -199,7 +215,6 @@ export class DashboardComponent implements OnInit {
       const formData = this.imageGenForm.value;
       formData.product_name = userMessage;
       formData.product_desc = userMessage;
-      console.log(userMessage)
       this.http.post('http://localhost:8002/generate-image', formData).subscribe({
         next: (response: any) => {
           this.responseMessage = response.message;
@@ -219,23 +234,16 @@ export class DashboardComponent implements OnInit {
     setTimeout(() => this.showLoadingAnimation(userMessage), 100);
   }
 
-  // Copy message to clipboard
   copyMessage(message: ChatMessage | { content: string }): void {
     navigator.clipboard.writeText(message.content);
-    // Optionally, show a visual confirmation (e.g., change icon temporarily)
   }
 
-  // Toggle theme
   toggleTheme(): void {
     this.isLightMode = !this.isLightMode;
-    console.log('Toggling theme:', this.isLightMode, 'Before toggle, body has light_mode:', document.body.classList.contains('light_mode'));
     document.body.classList.toggle('light_mode', this.isLightMode);
-    console.log('After toggle, body has light_mode:', document.body.classList.contains('light_mode'));
     localStorage.setItem('themeColor', this.isLightMode ? 'light_mode' : 'dark_mode');
   }
 
-
-  // Delete all chats
   deleteChats(): void {
     if (confirm('Are you sure you want to delete all the chats?')) {
       this.chatMessages = [];
@@ -243,21 +251,20 @@ export class DashboardComponent implements OnInit {
       this.loadDataFromLocalStorage();
     }
   }
-  
+
   shareToFacebook(message: ChatMessage): void {
     if (!message.facebookPost) return;
 
     const shareUrl = 'https://www.facebook.com/sharer/sharer.php';
     const text = `${message.facebookPost}\n\nBest time to post: ${message.facebookPostingTime || 'Not predicted yet'}`;
     const url = `${shareUrl}?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
-    
+
     window.open(url, '_blank', 'width=600,height=400');
   }
 
   shareToInstagram(message: ChatMessage): void {
     if (!message.instagramPost) return;
 
-    // Instagram doesn't have a direct share URL, so we'll copy the content to clipboard
     const text = `${message.instagramPost}\n\nBest time to post: ${message.instagramPostingTime || 'Not predicted yet'}`;
     navigator.clipboard.writeText(text).then(() => {
       this.snackBar.open('Content copied! You can now paste it to Instagram', 'Close', {
@@ -271,7 +278,7 @@ export class DashboardComponent implements OnInit {
       });
     });
   }
-  // Scroll to bottom of chat list
+
   private scrollToBottom(): void {
     setTimeout(() => {
       const chatList = document.querySelector('.chat-list');
@@ -281,7 +288,6 @@ export class DashboardComponent implements OnInit {
     }, 0);
   }
 
-  // Image generation form submission
   onSubmit(): void {
     if (this.imageGenForm.valid) {
       this.isLoading = true;
@@ -290,14 +296,12 @@ export class DashboardComponent implements OnInit {
         next: (response: any) => {
           this.responseMessage = response.message;
           this.image = response.image || null;
-         
-         
+          this.isLoading = false;
         },
-        
         error: (error) => {
           this.responseMessage = `Error: ${error.error.detail || error.message}`;
           this.image = null;
-         
+          this.isLoading = false;
           console.error('HTTP Error:', error);
         }
       });
@@ -305,23 +309,18 @@ export class DashboardComponent implements OnInit {
   }
 
   loadProduct(): void {
-    const currentUser = this.sessionService.currentUserSig()
+    const currentUser = this.sessionService.currentUserSig();
     const productId = currentUser?._id;
-    console.log(currentUser);
-    console.log(productId);
     if (productId) {
-      console.log("aaaaaaaaaaaaa");
       this.productService.getAllProducts(productId).subscribe({
         next: (products) => {
           this.products = products;
           this.suggestions = products.map(product => ({
             image: product.imageUrls?.[0] || 'https://images.pexels.com/photos/2072158/pexels-photo-2072158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-            text: ` ${product.description}`,
+            text: `${product.description}`,
             name: product.name,
             icon: 'shopping_cart'
           }));
-          console.log(this.products);
-          // You can use the products data here
           if (this.products.length > 0) {
             this.imageGenForm.patchValue({
               product_name: this.products[0].name,

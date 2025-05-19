@@ -1,16 +1,21 @@
 <div class="login-container">
-  <div class="logo-container">
+  <video class="background-video" autoplay muted loop playsinline>
+    <source src="bgLogin.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="logo-container" [@logoAnimation]>
     <img src="/assets/logo-name.png" alt="App Logo" class="logo">
   </div>
-    <mat-card class="login-card">
-      <mat-card-header>
-        <mat-card-title>Welcome back!</mat-card-title>
-        <mat-card-subtitle>Connect using your credentials</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
+  <mat-card class="login-card" [@cardAnimation]>
+    <mat-card-header>
+      <mat-card-title>Welcome Back!</mat-card-title>
+      <mat-card-subtitle>Sign in to your account</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="form-container">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
+          <mat-form-field appearance="outline" class="full-width" [@fieldAnimation]="fieldAnimationState">
+            <mat-label>Email Address</mat-label>
             <input matInput formControlName="email" type="email" placeholder="Enter your email">
             <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
               Email is required
@@ -19,8 +24,7 @@
               Please enter a valid email
             </mat-error>
           </mat-form-field>
-  
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="full-width" [@fieldAnimation]="fieldAnimationState">
             <mat-label>Password</mat-label>
             <input matInput formControlName="password" type="password" placeholder="Enter your password">
             <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
@@ -30,27 +34,20 @@
               Password must be at least 6 characters
             </mat-error>
           </mat-form-field>
-  
           <mat-card-actions class="actions">
-            <button mat-raised-button color="secondary" type="submit">
+            <button mat-raised-button color="primary" type="submit" class="sign-in-button" [disabled]="loginForm.invalid">
               Sign In
+            </button>
+            <button mat-stroked-button color="primary" (click)="loginWithGoogle()" class="google-button">
+              <img src="/assets/google-logo.svg" alt="Google Logo" class="google-icon" />
             </button>
           </mat-card-actions>
         </form>
-        <mat-card-actions class="actions google-login">
-          <button mat-stroked-button color="primary" (click)="loginWithGoogle()">
-            <img src="/assets/google-logo.svg" alt="Google Logo" class="google-icon" />
-            Sign in with Google
-          </button>
-        </mat-card-actions>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="register-card">
-      <mat-card-content>
-        <div class="register-text">
-          Or <a routerLink="/auth/register">click here</a> to create your free account.
-        </div>
-      </mat-card-content>
-    </mat-card>
-    
-  </div>
+        <br>
+      <div>
+        New here? <a routerLink="/auth/register" class="register-link">Create a free account</a>
+      </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

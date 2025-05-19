@@ -1,0 +1,102 @@
+/* Full page animated gradient background */
+body, html {
+  height: 100%;
+  margin: 0;
+  background: linear-gradient(-45deg, #3f51b5, #2196f3, #9c27b0, #673ab7);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+#background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  filter: brightness(0.7); /* Optional: darken for better contrast */
+  pointer-events: none; /* Prevent interfering with clicks */
+}
+
+/* Container and content stay above the video */
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 30px 40px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Rest of your styles... */
+.dashboard-container {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.dashboard-title {
+  font-size: 2.8rem;
+  color: #3f51b5;
+  margin-bottom: 0.25em;
+  font-weight: 700;
+}
+
+.dashboard-subtitle {
+  font-size: 1.3rem;
+  color: #666;
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.dashboard-description {
+  font-size: 1.1rem;
+  color: #444;
+  margin: 20px 0 30px;
+  text-align: center;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chart-container {
+  height: 400px;
+  position: relative;
+}
+
+canvas {
+  width: 100% !important;
+  height: 400px !important;
+}
+
+/* Light mode overrides */
+:host-context(.light_mode) .content {
+  background: rgba(240, 240, 240, 0.95);
+}
+
+:host-context(.light_mode) .dashboard-title {
+  color: #1a237e;
+}
+
+:host-context(.light_mode) .dashboard-subtitle {
+  color: #555;
+}

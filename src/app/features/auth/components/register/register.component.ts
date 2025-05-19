@@ -6,15 +6,55 @@ import { LocalStorageService } from '../../../../core/services/local-storage.ser
 import { SessionService } from '../../../../core/services/session.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from '../../../../core/models/user.model';
+import { trigger, style, animate, transition, query, stagger, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  standalone: false
+  standalone: false,
+  animations: [
+    trigger('cardAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.8) translateY(100px)' }),
+        animate('600ms ease-out', style({ opacity: 1, transform: 'scale(1) translateY(0)' })),
+      ]),
+    ]),
+    trigger('fieldAnimation', [
+      transition(':enter', [
+        query('mat-form-field', [
+          style({ opacity: 0, transform: 'translateY(30px)' }),
+          stagger(150, [
+            animate('500ms ease-out', keyframes([
+              style({ opacity: 0, transform: 'translateY(30px)', offset: 0 }),
+              style({ opacity: 0.5, transform: 'translateY(-10px)', offset: 0.7 }),
+              style({ opacity: 1, transform: 'translateY(0)', offset: 1 }),
+            ])),
+          ]),
+        ]),
+      ]),
+    ]),
+    trigger('logoAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.5)' }),
+        animate('800ms ease-out', keyframes([
+          style({ opacity: 0, transform: 'scale(0.5)', offset: 0 }),
+          style({ opacity: 0.7, transform: 'scale(1.2)', offset: 0.7 }),
+          style({ opacity: 1, transform: 'scale(1)', offset: 1 }),
+        ])),
+      ]),
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('800ms ease-out', style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
+  fieldAnimationState = 'enter';
 
   router = inject(Router);
   userService = inject(UserService);
@@ -34,7 +74,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // Custom validator to check if password and confirmPassword match
   passwordMatchValidator(): ValidatorFn {
     return (formGroup: AbstractControl) => {
       const password = formGroup.get('password')?.value;

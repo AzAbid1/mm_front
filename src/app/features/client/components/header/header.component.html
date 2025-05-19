@@ -1,32 +1,32 @@
 <mat-toolbar class="header">
-    <div class="header-content">
-      <!-- Logo -->
-      <img src="/assets/logo-name.png" alt="Marketmind Logo" class="logo">
-      <mat-divider vertical class="separator"></mat-divider>
-      <!-- Navigation Buttons -->
-      <div class="nav-buttons">
-        <button mat-button routerLink="/client/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          Generate Social Media
-        </button>
-        <button mat-button routerLink="/client/analytics" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
-          Market Trends
-        </button>
-        <button mat-button routerLink="/client/my-products" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
-          Products
-        </button>
-      </div>
-  
-      <!-- Spacer to push settings to the right -->
-      <span class="spacer"></span>
-  
-      <!-- Settings Icon with Dropdown -->
-      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" aria-label="Settings">
-        <mat-icon>settings</mat-icon>
+  <div class="header-content">
+    <!-- Logo -->
+    <img src="/assets/logo-name.png" alt="Marketmind Logo" class="logo" [@logoAnimation]>
+    <mat-divider vertical class="separator"></mat-divider>
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons" [@navAnimation]>
+      <button mat-button routerLink="/client/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Generate Social Media
       </button>
-      <mat-menu #settingsMenu="matMenu">
-        <button mat-menu-item (click)="openAccountDetails()">Account Details</button>
-        <button mat-menu-item *ngIf="!sessionService.currentUserSig()?.isSocial" (click)="openChangePassword()">Change Password</button>
-        <button mat-menu-item (click)="logout()">Log Out</button>
-      </mat-menu>
+      <button mat-button routerLink="/client/my-products" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+        Products
+      </button>
+      <a mat-button href="/client/charts" target="_blank" rel="noopener noreferrer">
+        Market Trends
+      </a>
     </div>
-  </mat-toolbar>
+
+    <!-- Spacer to push settings to the right -->
+    <span class="spacer"></span>
+
+    <!-- Settings Icon with Dropdown -->
+    <button mat-icon-button [matMenuTriggerFor]="settingsMenu" aria-label="Settings">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <mat-menu #settingsMenu="matMenu">
+      <button mat-menu-item (click)="openAccountDetails()">Account Details</button>
+      <button mat-menu-item *ngIf="!sessionService.currentUserSig()?.isSocial" (click)="openChangePassword()">Change Password</button>
+      <button mat-menu-item (click)="logout()">Log Out</button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

@@ -12,7 +12,7 @@ export class NonSocialAuthGuard implements CanActivate {
     const user = this.sessionService.currentUserSig();
     console.log(user?.isSocial);
     if (user && user.isSocial) {
-      this.router.navigate(['/client']);
+      this.router.navigate(['/client/dashboard']);
       return false;
     }
     return true;

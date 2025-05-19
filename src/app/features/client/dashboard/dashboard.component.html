@@ -1,86 +1,122 @@
+<video autoplay muted loop playsinline id="bgVideo">
+  <source src="bgLogin.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <link rel="stylesheet" href="/assets/fonts/material-symbols.css" />
-  <body>
-  <div class="glass-container">
-    <div class="content">
-  <div class="dashboard-container">
-    <h1>Welcome to MarketMind!</h1>
-    <p>First part of integrating social media generation section.</p>
+<div class="container">
+  <div class="content">
+    <!-- Dashboard Header -->
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">MarketMind</h1>
+        <p class="dashboard-subtitle">AI-Powered Social Media Content Creator</p>
+      </div>
+      <button mat-icon-button class="delete-chat-button" aria-label="Delete all chats" (click)="deleteChats()">
+        <span class="material-symbols-rounded">delete</span>
+      </button>
+    </div>
 
- 
-       
-      <span id="delete-chat-button" class="icon material-symbols-rounded" (click)="deleteChats()">delete</span>
-   
-
-    
-  </div>
-
-  <header class="header" [class.hide-header]="chatMessages.length > 0">
-    <h1 class="title">Hello, there</h1>
-    <p class="subtitle">How can I help you today?</p>
-    <ul class="suggestion-list">
-      <li class="suggestion" *ngFor="let suggestion of suggestions" (click)="handleOutgoingChat(suggestion.text)">
-        <img src={{suggestion.image}} alt="easter bunny" style="width: 150px; align-self: center;">
-        <h1 class="text" style="align-self: center;">{{ suggestion.name }}</h1><br>
-        <h4 class="text"  style="align-self: right;">{{ suggestion.text }}</h4>
-        <span class="icon material-symbols-rounded">{{ suggestion.icon }}</span>
-      </li>
-    </ul>
-  </header>
-
-  <div class="chat-list">
-    <div class="message" *ngFor="let message of chatMessages" [class.incoming]="message.isIncoming" [class.outgoing]="!message.isIncoming" [class.loading]="message.isLoading" [class.error]="message.isError">
-      <div class="message-content">
-        <div class="message-text-content">
-          <div *ngIf="!message.isLoading && message.facebookPost" class="post-section">
-            <h4>Facebook Post</h4>
-            <p class="text">{{ message.facebookPost }}</p>
-            <div class="post-actions">
-              <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.facebookPost})">content_copy</span>
-              <button class="share-button facebook" (click)="shareToFacebook(message)">
-                <span class="material-symbols-rounded">share</span>
-                Share to Facebook
-              </button>
-            </div>
-            <div class="posting-time" *ngIf="message.facebookPostingTime">
-              <span class="material-symbols-rounded">schedule</span>
-              <p>Best time to post: {{ message.facebookPostingTime }}</p>
-            </div>
+    <!-- Suggestions Header (Hidden when chats exist) -->
+    <header class="header" [ngClass]="{'hide-header': chatMessages.length > 0}">
+      <h2 class="title">Get Started</h2>
+      <p class="subtitle">What can MarketMind create for you today?</p>
+      <ul class="suggestion-list">
+        <li class="suggestion-card" *ngFor="let suggestion of suggestions; let i = index"
+          (click)="handleOutgoingChat(suggestion.text)" role="button" tabindex="0"
+          (keyup.enter)="handleOutgoingChat(suggestion.text)" [style.--animation-delay]="i * 0.15 + 's'">
+          <img [src]="suggestion.image" [alt]="suggestion.name" class="suggestion-image">
+          <div class="suggestion-content">
+            <h3 class="suggestion-name">{{ suggestion.name }}</h3>
+            <p class="suggestion-text">{{ suggestion.text }}</p>
+            <span class="material-symbols-rounded suggestion-icon">{{ suggestion.icon }}</span>
           </div>
-          <div *ngIf="!message.isLoading && message.instagramPost" class="post-section">
-            <h4>Instagram Post</h4>
-            <p class="text">{{ message.instagramPost }}</p>
-            <div class="post-actions">
-              <span class="icon material-symbols-rounded" (click)="copyMessage({content: message.instagramPost})">content_copy</span>
-              <button class="share-button instagram" (click)="shareToInstagram(message)">
-                <span class="material-symbols-rounded">share</span>
-                Share to Instagram
-              </button>
+        </li>
+      </ul>
+    </header>
+
+    <!-- Chat Messages -->
+    <div class="chat-list" #chatList>
+      <div class="message" *ngFor="let message of chatMessages; let i = index" [ngClass]="{
+     'incoming': message.isIncoming,
+     'outgoing': !message.isIncoming,
+     'loading': message.isLoading,
+     'error': message.isError
+   }" [style.--animation-delay]="i * 0.1 + 's'">
+        <div class="message-content">
+          <div class="message-text-content">
+            <!-- Message Section -->
+            <div class="post-section">
+              <h4 class="post-title">Message</h4>
+              <p class="post-text">{{ message.content || 'No message content available' }}</p>
+              <div class="post-actions">
+                <button mat-icon-button (click)="copyMessage({ content: message.content })" aria-label="Copy message">
+                  <span class="material-symbols-rounded">content_copy</span>
+                </button>
+              </div>
             </div>
-            <div class="posting-time" *ngIf="message.instagramPostingTime">
-              <span class="material-symbols-rounded">schedule</span>
-              <p>Best time to post: {{ message.instagramPostingTime }}</p>
+
+            <!-- Facebook Post Section -->
+            <div class="post-section" *ngIf="message.facebookPost">
+              <h4 class="post-title">Facebook Post</h4>
+              <p class="post-text">{{ message.facebookPost }}</p>
+              <p class="post-time" *ngIf="message.facebookPostingTime">
+                Best time to post: {{ message.facebookPostingTime }}
+              </p>
+              <div class="post-actions">
+                <button mat-icon-button (click)="copyMessage({ content: message.facebookPost })"
+                  aria-label="Copy Facebook post">
+                  <span class="material-symbols-rounded">content_copy</span>
+                </button>
+                <button mat-icon-button (click)="shareToFacebook(message)" aria-label="Share to Facebook">
+                  <span class="material-symbols-rounded">share</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <img *ngIf="message.image" [src]="message.image" alt="Generated image" class="message-image" (click)="openImagePopup(message.image)" style="cursor: pointer;">
-          <div class="loading-indicator" *ngIf="message.isLoading">
-            <div class="loading-bar"></div>
-            <div class="loading-bar"></div>
-            <div class="loading-bar"></div>
-            <div class="loading-bar"></div>
+
+            <!-- Instagram Post Section -->
+            <div class="post-section" *ngIf="message.instagramPost">
+              <h4 class="post-title">Instagram Post</h4>
+              <p class="post-text">{{ message.instagramPost }}</p>
+              <p class="post-time" *ngIf="message.instagramPostingTime">
+                Best time to post: {{ message.instagramPostingTime }}
+              </p>
+              <div class="post-actions">
+                <button mat-icon-button (click)="copyMessage({ content: message.instagramPost })"
+                  aria-label="Copy Instagram post">
+                  <span class="material-symbols-rounded">content_copy</span>
+                </button>
+                <button mat-icon-button (click)="shareToInstagram(message)" aria-label="Share to Instagram">
+                  <span class="material-symbols-rounded">share</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Image Display -->
+            <img *ngIf="message.image" [src]="message.image" alt="Generated image" class="message-image"
+              (click)="openImagePopup(message.image)" role="button" tabindex="0"
+              (keyup.enter)="openImagePopup(message.image)">
+
+            <!-- Loading Animation -->
+            <div class="loading-indicator" *ngIf="message.isLoading">
+              <div class="loading-dot"></div>
+              <div class="loading-dot"></div>
+              <div class="loading-dot"></div>
+            </div>
           </div>
         </div>
       </div>
-      <span class="icon material-symbols-rounded" *ngIf="!message.isLoading && !message.isError && !message.facebookPost" (click)="copyMessage(message)">content_copy</span>
     </div>
-  </div>
 
-  <!-- Add posting time prediction section -->
-  
-  
+    <!-- Chat Input Form -->
+    <form [formGroup]="chatForm" (ngSubmit)="handleOutgoingChat()" class="chat-form">
+      <mat-form-field appearance="fill" class="chat-input">
+        <mat-label>Your Message</mat-label>
+        <input matInput formControlName="message" placeholder="Type your message..." required>
+      </mat-form-field>
+      <button mat-flat-button type="submit" [disabled]="isResponseGenerating || !chatForm.valid"
+        aria-label="Send message" class="send-button">
+        <span class="material-symbols-rounded">send</span>
+      </button>
+    </form>
   </div>
-  
-  </div>
- 
-</body>
+</div>

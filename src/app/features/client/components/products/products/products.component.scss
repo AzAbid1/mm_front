@@ -1,21 +1,22 @@
-// Variables for consistency
 $card-max-width: 350px;
 $spacing-unit: 18px;
-$card-padding: 16px;
-$background-color: #f2f4f6;
-$card-background-color: #173d8e;
+$card-padding: 20px;
+$background-color: #fff;
+$card-background-color: #fff;
+$card-border-color: #ddd;
+$card-shadow: rgba(0, 0, 0, 0.08);
+$card-hover-shadow: rgba(0, 0, 0, 0.15);
+$button-bg-color: #000;
+$button-text-color: #fff;
+$button-hover-bg: #222;
 
 .products-container {
-  
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   padding: $spacing-unit;
-  background-color: #191922;
-  opacity: 0.8;
-  background-image: radial-gradient(#444cf7 2px, #808089 2px);
-  background-size: 50px 50px;
-  
+  background-color: $background-color;
+  display: flex;
+  flex-direction: column;
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -24,22 +25,35 @@ $card-background-color: #173d8e;
     padding: 0 $spacing-unit;
 
     h1 {
-      font-size: 28px;
-      font-weight: 500;
-      color: #1A2526;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: 1.1px;
     }
 
     button {
-      padding: 8px 16px;
-      font-size: 16px;
-      font-weight: 500;
+      padding: 10px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: $button-text-color;
+      background-color: $button-bg-color;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        background-color: $button-hover-bg;
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+      }
     }
   }
 
   .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax($card-max-width, 1fr));
-    gap: $spacing-unit;
+    gap: $spacing-unit * 1.5;
     padding: 0 $spacing-unit;
 
     @media (max-width: 1200px) {
@@ -52,28 +66,34 @@ $card-background-color: #173d8e;
 
     .product-card {
       background-color: $card-background-color;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      border: 1px solid $card-border-color;
+      box-shadow: 0 3px 10px $card-shadow;
       padding: $card-padding;
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
 
       &:hover {
-        transform: translateY(-4px);
+        transform: translateY(-6px);
+        box-shadow: 0 8px 18px $card-hover-shadow;
       }
 
       mat-card-header {
+        padding: 0;
+        margin-bottom: $spacing-unit / 2;
+
         mat-card-title {
-          font-size: 20px;
-          font-weight: 500;
-          color: #1A2526;
+          font-size: 1.3rem;
+          font-weight: 700;
+          color: #000;
         }
 
         mat-card-subtitle {
-          font-size: 14px;
-          color: #666;
+          font-size: 0.9rem;
+          color: #444;
+          font-weight: 500;
         }
       }
 
@@ -81,13 +101,19 @@ $card-background-color: #173d8e;
         width: 100%;
         height: 200px;
         overflow: hidden;
+        border-radius: 10px;
         margin-bottom: $spacing-unit;
 
         .product-image {
           width: 100%;
-          height: 200px;
+          height: 100%;
           object-fit: cover;
-          border-radius: 4px;
+          border-radius: 10px;
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: scale(1.05);
+          }
         }
 
         .no-image {
@@ -97,56 +123,74 @@ $card-background-color: #173d8e;
           align-items: center;
           justify-content: center;
           background-color: #f5f5f5;
-          color: #666;
+          color: #888;
           font-size: 14px;
-          border-radius: 4px;
+          border-radius: 10px;
+          font-style: italic;
         }
       }
 
       .price {
-        font-size: 16px;
-        font-weight: 500;
-        color: #1A2526;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #000;
         margin-top: $spacing-unit / 2;
+      }
+
+      .description {
+        font-size: 0.95rem;
+        color: #444;
+        margin-top: 8px;
+        line-height: 1.3;
       }
     }
 
     .add-product-card {
-      background-color: #f5f5f5;
-      border: 2px dashed #007bff;
-      border-radius: 8px;
+      background-color: #fff;
+      border: 2px dashed #000;
+      border-radius: 14px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      padding: $card-padding;
 
       &:hover {
-        background-color: #e6f0ff;
+        background-color: #f9f9f9;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       }
 
       .add-product-content {
         text-align: center;
-        color: #007bff;
+        color: #000;
+        user-select: none;
 
         mat-icon {
-          font-size: 40px;
-          width: 40px;
-          height: 40px;
-          margin-bottom: 8px;
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          margin-bottom: 10px;
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: rotate(15deg) scale(1.15);
+          }
         }
 
         p {
-          font-size: 16px;
-          font-weight: 500;
+          font-size: 1.2rem;
+          font-weight: 600;
           margin: 0;
+          letter-spacing: 0.04em;
         }
       }
     }
   }
 }
 
+/* Snackbar styles */
 .snackbar-success {
   background-color: #4caf50;
   color: white;

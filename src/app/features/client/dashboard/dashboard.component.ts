@@ -46,6 +46,7 @@ interface ApiResponse {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
   imageGenForm: FormGroup;
   chatForm: FormGroup;
   responseMessage: string | null = null;
@@ -213,26 +214,26 @@ export class DashboardComponent implements OnInit {
     this.saveChatsToLocalStorage();
     this.scrollToBottom();
 
-    if(this.generateImage){
-    const formData = this.imageGenForm.value;
-    formData.product_name = userMessage;
-    formData.product_desc = userMessage;
-    this.http.post('http://localhost:8002/generate-image', formData).subscribe({
-      next: (response: any) => {
-        this.responseMessage = response.message;
-        this.image = response.image || null;
-        if (this.image && this.chatMessages.length > 0) {
-          this.chatMessages[this.chatMessages.length - 1].image = this.image;
-          this.saveChatsToLocalStorage();
+    if (this.generateImage) {
+      const formData = this.imageGenForm.value;
+      formData.product_name = userMessage;
+      formData.product_desc = userMessage;
+      this.http.post('http://localhost:8002/generate-image', formData).subscribe({
+        next: (response: any) => {
+          this.responseMessage = response.message;
+          this.image = response.image || null;
+          if (this.image && this.chatMessages.length > 0) {
+            this.chatMessages[this.chatMessages.length - 1].image = this.image;
+            this.saveChatsToLocalStorage();
+          }
+        },
+        error: (error) => {
+          this.responseMessage = `Error: ${error.error.detail || error.message}`;
+          this.image = null;
+          console.error('HTTP Error:', error);
         }
-      },
-      error: (error) => {
-        this.responseMessage = `Error: ${error.error.detail || error.message}`;
-        this.image = null;
-        console.error('HTTP Error:', error);
-      }
-    });
-  }
+      });
+    }
     setTimeout(() => this.showLoadingAnimation(userMessage), 100);
   }
 
@@ -370,5 +371,14 @@ export class DashboardComponent implements OnInit {
       width: '600px',
       panelClass: 'image-popup-dialog'
     });
+  }
+
+  speakText(text: string): void {
+    if (!text) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // You can change this to your preferred language
+    speechSynthesis.cancel(); // Cancel any ongoing speech
+    speechSynthesis.speak(utterance);
   }
 }

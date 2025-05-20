@@ -52,6 +52,9 @@
                 <button mat-icon-button (click)="copyMessage({ content: message.content })" aria-label="Copy message">
                   <span class="material-symbols-rounded">content_copy</span>
                 </button>
+                  <button mat-icon-button (click)="speakText(message.content)" aria-label="Read aloud">
+                  <span class="material-symbols-rounded">volume_up</span>
+                </button>
               </div>
             </div>
 

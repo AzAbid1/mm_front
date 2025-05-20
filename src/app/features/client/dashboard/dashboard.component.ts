@@ -66,6 +66,8 @@ export class DashboardComponent implements OnInit {
   selectedTone: string = 'enthusiastic';
   predictedTime: string | null = null;
   isPredicting = false;
+  generateAudio: boolean = false;
+  generateImage: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -211,26 +213,26 @@ export class DashboardComponent implements OnInit {
     this.saveChatsToLocalStorage();
     this.scrollToBottom();
 
-    if (!this.imageGenForm.valid) {
-      const formData = this.imageGenForm.value;
-      formData.product_name = userMessage;
-      formData.product_desc = userMessage;
-      this.http.post('http://localhost:8002/generate-image', formData).subscribe({
-        next: (response: any) => {
-          this.responseMessage = response.message;
-          this.image = response.image || null;
-          if (this.image && this.chatMessages.length > 0) {
-            this.chatMessages[this.chatMessages.length - 1].image = this.image;
-            this.saveChatsToLocalStorage();
-          }
-        },
-        error: (error) => {
-          this.responseMessage = `Error: ${error.error.detail || error.message}`;
-          this.image = null;
-          console.error('HTTP Error:', error);
+    if(this.generateImage){
+    const formData = this.imageGenForm.value;
+    formData.product_name = userMessage;
+    formData.product_desc = userMessage;
+    this.http.post('http://localhost:8002/generate-image', formData).subscribe({
+      next: (response: any) => {
+        this.responseMessage = response.message;
+        this.image = response.image || null;
+        if (this.image && this.chatMessages.length > 0) {
+          this.chatMessages[this.chatMessages.length - 1].image = this.image;
+          this.saveChatsToLocalStorage();
         }
-      });
-    }
+      },
+      error: (error) => {
+        this.responseMessage = `Error: ${error.error.detail || error.message}`;
+        this.image = null;
+        console.error('HTTP Error:', error);
+      }
+    });
+  }
     setTimeout(() => this.showLoadingAnimation(userMessage), 100);
   }
 

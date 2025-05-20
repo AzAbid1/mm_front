@@ -27,15 +27,17 @@
               Price must be greater than 0
             </mat-error>
           </mat-form-field>
-  
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Category</mat-label>
-            <input matInput formControlName="category" placeholder="Enter category">
+            <mat-select formControlName="category" placeholder="Select category">
+              <mat-option *ngFor="let category of categories" [value]="category">
+                {{ category | titlecase }}
+              </mat-option>
+            </mat-select>
             <mat-error *ngIf="productForm.get('category')?.hasError('required')">
               Category is required
             </mat-error>
           </mat-form-field>
-  
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Description</mat-label>
             <textarea matInput formControlName="description" placeholder="Enter product description" rows="4"></textarea>

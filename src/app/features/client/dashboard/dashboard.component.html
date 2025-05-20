@@ -108,6 +108,14 @@
     </div>
 
     <!-- Chat Input Form -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+      <label>
+        <input type="checkbox" [(ngModel)]="generateImage" name="generateImage"> Image
+      </label>
+    </div>
+
+
+    <!-- Chat Input Form -->
     <form [formGroup]="chatForm" (ngSubmit)="handleOutgoingChat()" class="chat-form">
       <mat-form-field appearance="fill" class="chat-input">
         <mat-label>Your Message</mat-label>

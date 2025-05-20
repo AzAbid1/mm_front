@@ -20,6 +20,7 @@ export class AddProductComponent {
   productService = inject(ProductService);
   sessionService = inject(SessionService);
   snackBar = inject(MatSnackBar);
+  categories: string[] = ['food', 'fashion', 'beauty', 'tech', 'lifestyle'];
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
@@ -27,7 +28,7 @@ export class AddProductComponent {
       price: ['', [Validators.required, Validators.min(0.01)]],
       category: ['', Validators.required],
       description: [''],
-      images: this.fb.array([this.fb.control('')]) // Initialize with one image field
+      images: this.fb.array([this.fb.control('')])
     });
   }
 

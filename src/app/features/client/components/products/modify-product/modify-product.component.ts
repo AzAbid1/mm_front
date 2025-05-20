@@ -20,6 +20,7 @@ export class ModifyProductComponent {
   productId: string | null = null;
   maxNewImages: number = 5;
   totalImages: number = 0;
+  categories: string[] = ['food', 'fashion', 'beauty', 'tech', 'lifestyle'];
 
   router = inject(Router);
   route = inject(ActivatedRoute);
